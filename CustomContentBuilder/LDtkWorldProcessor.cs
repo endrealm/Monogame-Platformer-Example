@@ -14,9 +14,7 @@ namespace CustomContentBuilder
             {
                 ContentLogger.Logger = context.Logger;
                 ContentLogger.LogMessage($"Processing");
-                ContentLogger.LogMessage($"Processing {JsonConvert.True}");
                 
-
                 return LDtkProject.FromJson(input);
             }
             catch (Exception ex)
