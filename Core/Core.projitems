@@ -10,6 +10,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\IEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\ILivingEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\IDrawable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\ISceneManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\IUpdateable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\GameLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\IScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\BaseScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\WorldScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\MenuScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
