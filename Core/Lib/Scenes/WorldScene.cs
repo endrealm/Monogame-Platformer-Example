@@ -35,7 +35,7 @@ namespace Core.Lib.Scenes
 
         protected override void LoadContent(SpriteBatch spriteBatch, ContentManager contentManager)
         {
-            var world =  new World(spriteBatch,"GameWorld.ldtk"); 
+            var world = contentManager.Load<LDtkWorld>("GameWorld.ldtk"); 
             _level = new GameLevel(world.GetLevel("Start"));
             
             _level.Load(contentManager);

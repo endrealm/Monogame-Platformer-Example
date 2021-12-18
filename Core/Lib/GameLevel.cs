@@ -9,10 +9,10 @@ namespace Core.Lib
 {
     public class GameLevel: IUpdateable, IDrawable
     {
-        private readonly Level _level;
+        private readonly LDtkLevel _level;
         private HashSet<IEntity> _entities = new HashSet<IEntity>();
 
-        public GameLevel(Level level)
+        public GameLevel(LDtkLevel level)
         {
             _level = level;
         }

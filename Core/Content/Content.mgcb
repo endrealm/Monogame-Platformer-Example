@@ -10,8 +10,15 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\CustomContentBuilder\bin\Debug\netcoreapp3.1\CustomContentBuilder.dll
+/reference:..\..\CustomContentBuilder\bin\Debug\netcoreapp3.1\LDtk.dll
 
 #---------------------------------- Content ---------------------------------#
+
+#begin GameWorld.ldtk
+/importer:LDtkWorldImporter
+/processor:LDtkWorldProcessor
+/build:GameWorld.ldtk
 
 #begin Tilesets/tileset.png
 /importer:TextureImporter
