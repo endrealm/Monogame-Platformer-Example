@@ -1,6 +1,7 @@
 ﻿using System;
 using LDtk.Json;
 using Microsoft.Xna.Framework.Content.Pipeline;
+using Newtonsoft.Json;
 
 namespace CustomContentBuilder
 {
@@ -13,6 +14,8 @@ namespace CustomContentBuilder
             {
                 ContentLogger.Logger = context.Logger;
                 ContentLogger.LogMessage($"Processing");
+                ContentLogger.LogMessage($"Processing {JsonConvert.True}");
+                
 
                 return LDtkProject.FromJson(input);
             }

@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\CustomContentBuilder\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 /reference:..\..\CustomContentBuilder\bin\Debug\netcoreapp3.1\CustomContentBuilder.dll
 /reference:..\..\CustomContentBuilder\bin\Debug\netcoreapp3.1\LDtk.dll
 
