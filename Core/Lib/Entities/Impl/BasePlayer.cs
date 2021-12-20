@@ -1,12 +1,15 @@
-﻿using Core.Lib.Entities.Rendering;
+﻿using System.Linq;
+using Core.Lib.Entities.Rendering;
+using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Core.Lib.Entities.Impl
 {
+#nullable enable
     public class BasePlayer: BaseLivingEntity<BasePlayer>, IPlayer
     {
-        #nullable enable
+        private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
         public GameLevel? SwitchLevel(GameLevel gameLevel)
         {
@@ -17,8 +20,9 @@ namespace Core.Lib.Entities.Impl
             return old;
         }
 
-        public BasePlayer(RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
+        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
         {
+            _worldScene = worldScene;
         }
 
         public override void Update(float deltaTime)
@@ -26,10 +30,7 @@ namespace Core.Lib.Entities.Impl
             base.Update(deltaTime);
             var keyboardState = Keyboard.GetState();
 
-            // the camera properties of the camera can be conrolled to move, zoom and rotate
             const float movementSpeed = 200;
-            const float rotationSpeed = 0.5f;
-            const float zoomSpeed = 0.5f;
 
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
                 Move(new Vector2(0, -movementSpeed) * deltaTime);
@@ -42,6 +43,15 @@ namespace Core.Lib.Entities.Impl
 
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
                 Move(new Vector2(movementSpeed, 0) * deltaTime);
+
+            var center = BodyCenter;
+            
+            // Still same room so ignore
+            if(_currentLevel?.GetBoundingRect().Contains(center) ?? true) return;
+            var newLevel = _worldScene.Levels.FirstOrDefault(level => level.GetBoundingRect().Contains(center));
+            if(newLevel == null) return;
+            _worldScene.ChangeActiveLevel(newLevel);
+            SwitchLevel(newLevel);
         }
     }
 }

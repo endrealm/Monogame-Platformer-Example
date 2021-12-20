@@ -17,7 +17,7 @@ namespace Core
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        
+
         private readonly Vector2 _baseScreenSize = new Vector2(1920, 1080);
         private IScene _activeScene;
         private OrthographicCamera _camera;
@@ -47,12 +47,9 @@ namespace Core
             _graphics.ApplyChanges();
             
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, (int)_baseScreenSize.X, (int)_baseScreenSize.Y);
-            _camera = new OrthographicCamera(viewportAdapter)
-            {
-                Zoom = 2
-            };
+            _camera = new OrthographicCamera(viewportAdapter);
 
-            _cameraController = new CameraController(_camera);
+            _cameraController = new CameraController(_camera, 3);
             
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _bitmapFont = Content.Load<BitmapFont>("Fonts/montserrat-32");
@@ -87,7 +84,7 @@ namespace Core
         }
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(_cameraController.BackColor);
 
             var transformMatrix = _camera.GetViewMatrix();
             // TODO add camera transposition

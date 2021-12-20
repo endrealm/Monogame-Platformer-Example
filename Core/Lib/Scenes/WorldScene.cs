@@ -11,8 +11,8 @@ namespace Core.Lib.Scenes
     public class WorldScene: BaseScene
     {
         private GameLevel[] _levels;
-        private int _activeLevel;
-        private GameLevel ActiveLevel => _levels[_activeLevel];
+        private GameLevel _activeLevel;
+        public GameLevel[] Levels => _levels;
 
         private readonly string worldName;
 
@@ -23,24 +23,26 @@ namespace Core.Lib.Scenes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            ActiveLevel.Draw(spriteBatch);
+            _activeLevel.Draw(spriteBatch);
         }
 
         public override void Update(float deltaTime)
         {
-            ActiveLevel.Update(deltaTime);
+            _activeLevel.Update(deltaTime);
 
         }
 
         public override void Start()
         {
-            new BasePlayer(SceneManager.EntityRendererRegistry).SwitchLevel(ActiveLevel);
-            ActiveLevel.Start(SceneManager.CameraController);
+            new BasePlayer(this, SceneManager.EntityRendererRegistry).SwitchLevel(_activeLevel);
+            _activeLevel.Start(SceneManager.CameraController);
         }
 
         protected override void LoadContent(SpriteBatch spriteBatch, ContentManager contentManager)
         {
             var world = contentManager.Load<LDtkWorld>("GameWorld");
+            SceneManager.CameraController.ChangeColor(world.DefaultLevelBgColor);
+            
             world.GraphicsDevice = spriteBatch.GraphicsDevice;
             world.spriteBatch = spriteBatch;
             _levels = world.LoadLevels().Select(level => new GameLevel(level)).ToArray();
@@ -51,9 +53,15 @@ namespace Core.Lib.Scenes
                 gameLevel.Load(contentManager);
                 if (gameLevel.GetId().Equals("Start"))
                 {
-                    _activeLevel = i;
+                    _activeLevel = gameLevel;
                 }
             }
+        }
+
+        public void ChangeActiveLevel(GameLevel newLevel)
+        {
+            _activeLevel = newLevel;
+            _activeLevel.Start(SceneManager.CameraController);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Core.Lib.Entities.Impl
         protected readonly IEntityRenderer<T> Renderer;
         private bool _loaded;
 
+        public Vector2 BodyCenter => Transform.Position;
+
         public BaseEntity(IEntityRenderer<T> renderer)
         {
             Renderer = renderer;

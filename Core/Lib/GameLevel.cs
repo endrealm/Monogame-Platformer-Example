@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Core.Lib.Entities;
 using LDtk;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace Core.Lib
 {
@@ -29,7 +31,7 @@ namespace Core.Lib
 
         public void Update(float deltaTime)
         {
-            foreach (var entity in _entities)
+            foreach (var entity in _entities.ToArray())
             {
                 entity.Update(deltaTime);
             }
@@ -64,6 +66,11 @@ namespace Core.Lib
         public string GetId()
         {
             return _level.Identifier;
+        }
+
+        public RectangleF GetBoundingRect()
+        {
+            return new RectangleF(_level.Position, _level.Size);
         }
     }
 }

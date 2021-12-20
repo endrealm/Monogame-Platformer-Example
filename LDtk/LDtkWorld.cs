@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using LDtk.Exceptions;
@@ -7,6 +9,8 @@ using LDtk.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace LDtk
 {
@@ -15,6 +19,11 @@ namespace LDtk
     /// </summary>
     public class LDtkWorld
     {
+        public Color XNAColor(System.Drawing.Color color)
+        {
+            return new Color(color.R, color.G, color.B, color.A);
+        }
+        
         private readonly LDtkLevel[] levels;
         private readonly LDtkProject json;
 #pragma warning disable CS1591
@@ -23,6 +32,9 @@ namespace LDtk
         public GraphicsDevice GraphicsDevice;
 #pragma warning restore CS1591
         private readonly ContentManager Content;
+
+        public Color BgColor => XNAColor(ColorTranslator.FromHtml(json.BgColor));
+        public Color DefaultLevelBgColor => XNAColor(ColorTranslator.FromHtml(json.DefaultLevelBgColor));
 
         /// <summary>
         /// Load the LDtk json file
