@@ -38,6 +38,8 @@ namespace Core
 
         protected override void LoadContent()
         {
+            GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            
             _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             _graphics.IsFullScreen = true;
@@ -89,7 +91,7 @@ namespace Core
 
             var transformMatrix = _camera.GetViewMatrix();
             // TODO add camera transposition
-            _spriteBatch.Begin(transformMatrix: transformMatrix);
+            _spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
             
             _activeScene.Draw(_spriteBatch);
 
