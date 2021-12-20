@@ -56,9 +56,9 @@ namespace Core.Lib
             }
         }
 
-        public void Start()
+        public void Start(CameraController cameraController)
         {
-            
+            cameraController.UpdateBounds(_level.Position, _level.Size);
         }
 
         public string GetId()

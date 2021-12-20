@@ -6,5 +6,6 @@ namespace Core.Lib
     {
         void LoadScene(IScene scene);
         RendererRegistry EntityRendererRegistry { get; }
+        CameraController CameraController { get; }
     }
 }

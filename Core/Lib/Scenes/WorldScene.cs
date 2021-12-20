@@ -35,7 +35,7 @@ namespace Core.Lib.Scenes
         public override void Start()
         {
             new BasePlayer(SceneManager.EntityRendererRegistry).SwitchLevel(ActiveLevel);
-            ActiveLevel.Start();
+            ActiveLevel.Start(SceneManager.CameraController);
         }
 
         protected override void LoadContent(SpriteBatch spriteBatch, ContentManager contentManager)

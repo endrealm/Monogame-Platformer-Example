@@ -21,6 +21,7 @@ namespace Core
         private readonly Vector2 _baseScreenSize = new Vector2(1920, 1080);
         private IScene _activeScene;
         private OrthographicCamera _camera;
+        private CameraController _cameraController;
         private Vector2 _worldPosition;
         private BitmapFont _bitmapFont;
         private RendererRegistry _rendererRegistry = new RendererRegistry();
@@ -44,12 +45,17 @@ namespace Core
             _graphics.ApplyChanges();
             
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, (int)_baseScreenSize.X, (int)_baseScreenSize.Y);
-            _camera = new OrthographicCamera(viewportAdapter);
-            _camera.Zoom = 2;
+            _camera = new OrthographicCamera(viewportAdapter)
+            {
+                Zoom = 2
+            };
+
+            _cameraController = new CameraController(_camera);
             
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _bitmapFont = Content.Load<BitmapFont>("Fonts/montserrat-32");
            
+            // Register renderers here
             _rendererRegistry.RegisterRenderer(new PlayerRenderer());
             
             
@@ -73,6 +79,7 @@ namespace Core
             var mouseState = Mouse.GetState();
             
             _activeScene.Update(deltaTime);
+            _cameraController.Update(deltaTime);
             _worldPosition = _camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
             base.Update(gameTime);
         }
@@ -118,5 +125,7 @@ namespace Core
         }
 
         public RendererRegistry EntityRendererRegistry => _rendererRegistry;
+
+        public CameraController CameraController => _cameraController;
     }
 }

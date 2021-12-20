@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\CameraController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\IEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\ILivingEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Impl\BaseEntity.cs" />
@@ -27,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\BaseScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\WorldScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\MenuScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
