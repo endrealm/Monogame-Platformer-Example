@@ -12,6 +12,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\IEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\ILivingEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Impl\BaseEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Impl\BaseLivingEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Impl\BasePlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\IPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Rendering\IEntityRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Rendering\Impl\PlayerRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Rendering\RendererRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\IDrawable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\ISceneManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\IUpdateable.cs" />

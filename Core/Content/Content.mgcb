@@ -17,13 +17,21 @@
 /reference:..\..\packages\MonoGame.Extended.dll
 /reference:..\..\packages\MonoGame.Extended.Graphics.dll
 /reference:..\..\packages\MonoGame.Extended.Tiled.dll
+/reference:..\..\packages\MonoGame.Aseprite.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/montserrat-32.fnt
-/importer:BitmapFontImporter
-/processor:BitmapFontProcessor
-/build:Fonts/montserrat-32.fnt
+#begin Entities/test.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Entities/test.aseprite
 
 #begin Fonts/montserrat-32.fnt
 /importer:BitmapFontImporter

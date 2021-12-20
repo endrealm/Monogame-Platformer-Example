@@ -16,7 +16,7 @@ namespace Core.Lib
         {
             _level = level;
         }
-
+        
         public void AddEntity(IEntity entity)
         {
             _entities.Add(entity);
@@ -50,7 +50,10 @@ namespace Core.Lib
 
         public void Load(ContentManager contentManager)
         {
-            
+            foreach (var entity in _entities)
+            {
+                entity.LoadContent(contentManager);
+            }
         }
 
         public void Start()
@@ -58,7 +61,7 @@ namespace Core.Lib
             
         }
 
-        public string getID()
+        public string GetId()
         {
             return _level.Identifier;
         }

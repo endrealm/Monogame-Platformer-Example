@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Core.Lib.Entities.Impl;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,6 +34,7 @@ namespace Core.Lib.Scenes
 
         public override void Start()
         {
+            new BasePlayer(SceneManager.EntityRendererRegistry).SwitchLevel(ActiveLevel);
             ActiveLevel.Start();
         }
 
@@ -47,7 +49,7 @@ namespace Core.Lib.Scenes
             {
                 var gameLevel = _levels[i];
                 gameLevel.Load(contentManager);
-                if (gameLevel.getID().Equals("Start"))
+                if (gameLevel.GetId().Equals("Start"))
                 {
                     _activeLevel = i;
                 }
