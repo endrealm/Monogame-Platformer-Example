@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using LDtk;
@@ -8,7 +9,9 @@ namespace Core.Lib.Scenes
     
     public class WorldScene: BaseScene
     {
-        private GameLevel _level;
+        private GameLevel[] _levels;
+        private int _activeLevel;
+        private GameLevel ActiveLevel => _levels[_activeLevel];
 
         private readonly string worldName;
 
@@ -19,18 +22,18 @@ namespace Core.Lib.Scenes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            _level.Draw(spriteBatch);
+            ActiveLevel.Draw(spriteBatch);
         }
 
         public override void Update(float deltaTime)
         {
-            _level.Update(deltaTime);
+            ActiveLevel.Update(deltaTime);
 
         }
 
         public override void Start()
         {
-            _level.Start();
+            ActiveLevel.Start();
         }
 
         protected override void LoadContent(SpriteBatch spriteBatch, ContentManager contentManager)
@@ -38,11 +41,17 @@ namespace Core.Lib.Scenes
             var world = contentManager.Load<LDtkWorld>("GameWorld");
             world.GraphicsDevice = spriteBatch.GraphicsDevice;
             world.spriteBatch = spriteBatch;
-            
-            world.LoadLevel("Start");
-            _level = new GameLevel(world.GetLevel("Start"));
-            
-            _level.Load(contentManager);
+            _levels = world.LoadLevels().Select(level => new GameLevel(level)).ToArray();
+
+            for (var i = 0; i < _levels.Length; i++)
+            {
+                var gameLevel = _levels[i];
+                gameLevel.Load(contentManager);
+                if (gameLevel.getID().Equals("Start"))
+                {
+                    _activeLevel = i;
+                }
+            }
         }
     }
 }

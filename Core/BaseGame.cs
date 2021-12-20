@@ -1,7 +1,13 @@
-﻿using Core.Lib;
+﻿using System.Text;
+using Core.Lib;
 using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended.ViewportAdapters;
 
 namespace Core
 {
@@ -10,10 +16,11 @@ namespace Core
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         
-        private int _backbufferWidth, _backbufferHeight;
-        private readonly Vector2 _baseScreenSize = new Vector2(800, 480);
-        private Matrix _globalTransformation;
+        private readonly Vector2 _baseScreenSize = new Vector2(1920, 1080);
         private IScene _activeScene;
+        private OrthographicCamera _camera;
+        private Vector2 _worldPosition;
+        private BitmapFont _bitmapFont;
 
         protected BaseGame()
         {
@@ -24,56 +31,95 @@ namespace Core
             _activeScene.SetSceneManager(this);
         }
 
-        protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
-
-            base.Initialize();
-        }
-
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, (int)_baseScreenSize.X, (int)_baseScreenSize.Y);
+            _camera = new OrthographicCamera(viewportAdapter);
 
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _bitmapFont = Content.Load<BitmapFont>("Fonts/montserrat-32");
             // TODO: use this.Content to load your game content here
             _activeScene.Load(_spriteBatch, Content);
-
-            ScalePresentationArea();
             
             _activeScene.Start();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            _activeScene.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+            var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            
+            var keyboardState = Keyboard.GetState();
+            var mouseState = Mouse.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.Escape))
+                Exit();
+
+            // the camera properties of the camera can be conrolled to move, zoom and rotate
+            const float movementSpeed = 200;
+            const float rotationSpeed = 0.5f;
+            const float zoomSpeed = 0.5f;
+
+            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
+                _camera.Move(new Vector2(0, -movementSpeed) * deltaTime);
+
+            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+                _camera.Move(new Vector2(-movementSpeed, 0) * deltaTime);
+
+            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+                _camera.Move(new Vector2(0, movementSpeed) * deltaTime);
+
+            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+                _camera.Move(new Vector2(movementSpeed, 0) * deltaTime);
+
+            if (keyboardState.IsKeyDown(Keys.E))
+                _camera.Rotation += rotationSpeed * deltaTime;
+
+            if (keyboardState.IsKeyDown(Keys.Q))
+                _camera.Rotation -= rotationSpeed * deltaTime;
+
+            if (keyboardState.IsKeyDown(Keys.R))
+                _camera.ZoomIn(zoomSpeed * deltaTime);
+
+            if (keyboardState.IsKeyDown(Keys.F))
+                _camera.ZoomOut(zoomSpeed * deltaTime);
+
+            _worldPosition = _camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
+            
+            _activeScene.Update(deltaTime);
             base.Update(gameTime);
         }
-
-        private void ScalePresentationArea()
-        {
-            //Work out how much we need to scale our graphics to fill the screen
-            _backbufferWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
-            _backbufferHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            var horScaling = _backbufferWidth / _baseScreenSize.X;
-            var verScaling = _backbufferHeight / _baseScreenSize.Y;
-            var screenScalingFactor = new Vector3(horScaling, verScaling, 1);
-            _globalTransformation = Matrix.CreateScale(screenScalingFactor);
-            System.Diagnostics.Debug.WriteLine("Screen Size - Width[" + GraphicsDevice.PresentationParameters.BackBufferWidth + "] Height [" + GraphicsDevice.PresentationParameters.BackBufferHeight + "]");
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            
+            var transformMatrix = _camera.GetViewMatrix();
             // TODO add camera transposition
-            _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null,null, _globalTransformation);
+            _spriteBatch.Begin(transformMatrix: transformMatrix);
             
             _activeScene.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
+            
+            DebugCamera();
+
             base.Draw(gameTime);
+        }
+
+        private void DebugCamera()
+        {
+            // not all sprite batches need to be affected by the camera
+            var rectangle = _camera.BoundingRectangle;
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"WASD: Move [{_camera.Position.X:0}, {_camera.Position.Y:0}]");
+            stringBuilder.AppendLine($"EQ: Rotate [{MathHelper.ToDegrees(_camera.Rotation):0.00}]");
+            stringBuilder.AppendLine($"RF: Zoom [{_camera.Zoom:0.00}]");
+            stringBuilder.AppendLine($"World Pos: [{_worldPosition.X:0}, {_worldPosition.Y:0}]");
+            stringBuilder.AppendLine($"Bounds: [{rectangle.X:0}, {rectangle.Y:0}, {rectangle.Width:0}, {rectangle.Height:0}]");
+
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend);
+            _spriteBatch.DrawString(_bitmapFont, stringBuilder.ToString(), new Vector2(5, 5), Color.DarkBlue);
+            _spriteBatch.End();
         }
 
         public void LoadScene(IScene scene)

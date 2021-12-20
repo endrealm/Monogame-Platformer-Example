@@ -57,5 +57,10 @@ namespace Core.Lib
         {
             
         }
+
+        public string getID()
+        {
+            return _level.Identifier;
+        }
     }
 }

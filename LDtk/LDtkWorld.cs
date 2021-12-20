@@ -143,6 +143,20 @@ namespace LDtk
                 }
             }
         }
+        
+        
+        public LDtkLevel[] LoadLevels()
+        {
+            for (int i = 0; i < json.Levels.Length; i++)
+            {
+                if (levels[i] == null)
+                {
+                    LoadLevel(ref levels[i], json.Levels[i]);
+                }
+            }
+
+            return levels;
+        }
 
         private void LoadLevel(ref LDtkLevel level, Level jsonLevel)
         {
