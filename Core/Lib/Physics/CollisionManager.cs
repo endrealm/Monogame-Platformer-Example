@@ -144,6 +144,7 @@ namespace Core.Lib.Physics
 
         public void DebugDraw(SpriteBatch spriteBatch)
         {
+            if(!DebugDrawer.DEBUG) return;
             foreach (QuadtreeData data in _targetDataDictionary.Values)
             {
                 var shape = data.Bounds;
