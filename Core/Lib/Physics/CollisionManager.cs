@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace Core.Lib.Physics
@@ -22,7 +23,7 @@ namespace Core.Lib.Physics
                 
                 ICollisionTarget target = data.Target;
                 
-                if(target.StaticCollider) continue;
+                // if(target.StaticCollider) continue;
                 data.RemoveFromAllParents();
                 foreach (QuadtreeData quadtreeData in _collisionTree.Query(target.Bounds))
                 {
@@ -139,5 +140,17 @@ namespace Core.Lib.Physics
 
         private static Vector2 PenetrationVector(RectangleF rect, CircleF circ) =>
             -PenetrationVector(circ, rect);
+
+        public void DebugDraw(SpriteBatch spriteBatch)
+        {
+            foreach (QuadtreeData data in _targetDataDictionary.Values)
+            {
+                var shape = data.Bounds;
+                if (shape is RectangleF rect)
+                {
+                    spriteBatch.DrawRectangle(rect, Color.Lime, 2);
+                }
+            }
+        }
     }
 }

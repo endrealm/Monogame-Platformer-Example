@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\ICollisionTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Quadtree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\QuadtreeData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\StaticCollisionTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\BaseScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\WorldScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\MenuScene.cs" />

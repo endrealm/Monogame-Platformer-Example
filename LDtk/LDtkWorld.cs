@@ -241,7 +241,7 @@ namespace LDtk
 
             // Process intgrids
             List<LDtkIntGrid> intGrids = new List<LDtkIntGrid>();
-
+            level.LayerData = new LayerData[level.Layers.Length];
             // Render Tile, Auto and Int grid layers
             for (int i = jsonLayerInstances.Length - 1; i >= 0; i--)
             {
@@ -312,11 +312,12 @@ namespace LDtk
                         }
                         intGrids.Add(intGrid);
                     }
-
+                    
                     // Render all renderable layers
                     spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                     {
-                        RenderLayer(jsonLayer, texture);
+                        RenderLayer(jsonLayer, texture, out var data);
+                        level.LayerData[i] = data;
                     }
                     spriteBatch.End();
                 }
@@ -339,19 +340,20 @@ namespace LDtk
             spriteBatch.Draw(texture, pos, rect, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
 
-        private void RenderLayer(LayerInstance jsonLayer, Texture2D texture)
+        private void RenderLayer(LayerInstance jsonLayer, Texture2D texture, out LayerData layerData)
         {
+            layerData = null;
             switch (jsonLayer.Type)
             {
                 case LayerType.Tiles:
-                    RenderTilesInLayer(jsonLayer, texture, jsonLayer.GridTiles);
+                    RenderTilesInLayer(jsonLayer, texture, jsonLayer.GridTiles, out layerData);
                     break;
 
                 case LayerType.AutoLayer:
                 case LayerType.IntGrid:
                     if (jsonLayer.AutoLayerTiles.Length > 0)
                     {
-                        RenderTilesInLayer(jsonLayer, texture, jsonLayer.AutoLayerTiles);
+                        RenderTilesInLayer(jsonLayer, texture, jsonLayer.AutoLayerTiles, out layerData);
                     }
                     break;
 
@@ -359,15 +361,60 @@ namespace LDtk
             }
         }
 
-        private void RenderTilesInLayer(LayerInstance jsonLayer, Texture2D texture, TileInstance[] gridTiles)
+        private void RenderTilesInLayer(LayerInstance jsonLayer,Texture2D texture, TileInstance[] gridTiles, out LayerData layerData)
         {
+            var tilesetDefinition = json.Defs.Tilesets.FirstOrDefault(tilesetDefinition =>
+                tilesetDefinition.Uid == jsonLayer.TilesetDefUid);
+
+            layerData = new LayerData();
+            layerData.GridCellSize = jsonLayer.GridSize;
+            layerData.TileData = MatrixHelper.CreateMatrix<TileData>(jsonLayer.CWid, jsonLayer.CHei);
+            
+            var hasLayerData = false;
+            
             foreach (TileInstance tile in gridTiles.Where(tile => jsonLayer.TilesetDefUid.HasValue))
             {
+                // Check for additional data
+                if (tilesetDefinition != null && tilesetDefinition.EnumTags.Length > 0)
+                {
+                    var tilesetX = tile.Src[0] / tilesetDefinition.TileGridSize;
+                    var tilesetY = tile.Src[1] / tilesetDefinition.TileGridSize;
+                    var tilesetCellWidth = tilesetDefinition.PxWid / tilesetDefinition.TileGridSize;
+                    
+                    var positionIndex = tilesetX + tilesetY * tilesetCellWidth;
+
+                    var values = tilesetDefinition.EnumTags.Where(tag => tag.TileIds.Contains(positionIndex))
+                        .Select(tag => tag.EnumValueId).ToArray();
+                    if(values.Length != 0)
+                    {
+                        var coordX = tile.Px[0] / jsonLayer.GridSize;
+                        var coordY = tile.Px[1] / jsonLayer.GridSize;
+                        
+                        var enumDef =
+                            json.Defs.Enums.FirstOrDefault(definition => definition.Uid == tilesetDefinition.TagsSourceEnumUid);
+
+                        if (enumDef != null)
+                        {
+                            hasLayerData = true;
+
+                            layerData.TileData[coordX][coordY] = new TileData(new EnumData
+                            {
+                                EnumUid = enumDef.Uid,
+                                EnumName = enumDef.Identifier,
+                                Values = values,
+                            });
+                        }
+                    }
+                }
+                
+                // Render to layer
                 Vector2 position = new Vector2((int)(tile.Px[0] + jsonLayer.PxTotalOffsetX), (int)(tile.Px[1] + jsonLayer.PxTotalOffsetY));
                 Rectangle rect = new Rectangle((int)tile.Src[0], (int)tile.Src[1], (int)jsonLayer.GridSize, (int)jsonLayer.GridSize);
                 SpriteEffects mirror = (SpriteEffects)tile.F;
                 spriteBatch.Draw(texture, position, rect, Color.White, 0, Vector2.Zero, 1f, mirror, 0);
             }
+
+            if (!hasLayerData) layerData = null;
         }
 
 

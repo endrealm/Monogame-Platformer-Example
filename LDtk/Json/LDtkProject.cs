@@ -690,6 +690,18 @@ namespace LDtk.Json
         public Dictionary<string, object>[] SavedSelections { get; set; }
 
         /// <summary>
+        /// The enum tag
+        /// </summary>
+        [JsonProperty("tagsSourceEnumUid")]
+        public long? TagsSourceEnumUid { get; set; }
+        
+        /// <summary>
+        /// Array of enum tags
+        /// </summary>
+        [JsonProperty("enumTags")] 
+        public EnumTag[] EnumTags;
+
+        /// <summary>
         /// Space in pixels between all tiles
         /// </summary>
         [JsonProperty("spacing")]
@@ -703,6 +715,25 @@ namespace LDtk.Json
         /// </summary>
         [JsonProperty("uid")]
         public long Uid { get; set; }
+    }
+
+    /// <summary>
+    /// Enum data tag
+    /// </summary>
+    public partial class EnumTag
+    {
+        /// <summary>
+        /// The enum value for this tag
+        /// </summary>
+        [JsonProperty("enumValueId")]
+        public string EnumValueId;
+        /// <summary>
+        /// The tile ids effected by this enum tag
+        /// </summary>
+        [JsonProperty("tileIds")]
+        public long[] TileIds;
+        
+        
     }
 
     /// <summary>

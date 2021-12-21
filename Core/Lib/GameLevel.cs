@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Lib.Entities;
 using Core.Lib.Physics;
@@ -29,7 +30,21 @@ namespace Core.Lib
 
         private void LoadStaticColliders()
         {
-            
+            foreach (var layerData in _level.LayerData.Where(data => data != null))
+            {
+                for (var x = 0; x < layerData.TileData.Length; x++)
+                {
+                    var columnList = layerData.TileData[x];
+                    for (var y = 0; y < columnList.Length; y++)
+                    {
+                        var data = columnList[y];
+                        if(data == null) continue;
+                        
+                        if(!data.EnumData.EnumName.Equals("CollisionMaterial")) continue;
+                        _collisionManager.Insert(new StaticCollisionTarget(new RectangleF(_level.Position + new Vector2(x, y) * layerData.GridCellSize, new Vector2(1,1) * layerData.GridCellSize)));
+                    }
+                }
+            }
         }
 
         public void AddEntity(IEntity entity)
@@ -73,6 +88,8 @@ namespace Core.Lib
             {
                 entity.Draw(spriteBatch);
             }
+
+            _collisionManager.DebugDraw(spriteBatch);
         }
 
         public void Load(ContentManager contentManager)

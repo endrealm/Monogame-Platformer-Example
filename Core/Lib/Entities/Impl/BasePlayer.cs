@@ -13,8 +13,9 @@ namespace Core.Lib.Entities.Impl
     {
         private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
-        private readonly Vector2 size = new Vector2(16, 24);
-        private readonly Vector2 halfSize = new Vector2(16, 24)/2;
+        private readonly Vector2 size = new Vector2(32, 32);
+        // private readonly Vector2 size = new Vector2(16, 24);
+        // private readonly Vector2 halfSize = new Vector2(16, 24)/2;
         public GameLevel? SwitchLevel(GameLevel gameLevel)
         {
             var old = _currentLevel;
@@ -26,7 +27,7 @@ namespace Core.Lib.Entities.Impl
 
         public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
         {
-            Transform.Position += new Vector2(20, 20);
+            Transform.Position += new Vector2(40, 40);
             _worldScene = worldScene;
         }
 

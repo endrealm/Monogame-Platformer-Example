@@ -42,6 +42,11 @@ namespace LDtk
         public RenderTarget2D[] Layers { get; internal set; }
 
         /// <summary>
+        /// Layer data (contains data from tilesets
+        /// </summary>
+        public LayerData[] LayerData { get; internal set; }
+        
+        /// <summary>
         /// The neighbours uids of the level
         /// </summary>
         public long[] Neighbours { get; internal set; }
