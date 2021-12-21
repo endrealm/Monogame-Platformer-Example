@@ -5,7 +5,6 @@ using Core.Lib.Entities.Rendering.Impl;
 using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
@@ -18,7 +17,7 @@ namespace Core
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private readonly Vector2 _baseScreenSize = new Vector2(1920, 1080);
+        private readonly Vector2 _baseScreenSize = new Vector2(320, 180);
         private IScene _activeScene;
         private OrthographicCamera _camera;
         private CameraController _cameraController;
@@ -49,7 +48,7 @@ namespace Core
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, (int)_baseScreenSize.X, (int)_baseScreenSize.Y);
             _camera = new OrthographicCamera(viewportAdapter);
 
-            _cameraController = new CameraController(_camera, 3);
+            _cameraController = new CameraController(_camera, 1);
             
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _bitmapFont = Content.Load<BitmapFont>("Fonts/montserrat-32");
