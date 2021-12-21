@@ -28,6 +28,8 @@ namespace Core.Lib
             LoadStaticColliders();
         }
 
+        public CollisionManager CollsionManager => _collisionManager;
+
         private void LoadStaticColliders()
         {
             foreach (var layerData in _level.LayerData.Where(data => data != null))

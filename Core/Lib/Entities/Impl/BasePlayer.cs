@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Core.Lib.Entities.Rendering;
 using Core.Lib.Physics;
+using Core.Lib.Physics.Locomotion;
 using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -14,8 +15,17 @@ namespace Core.Lib.Entities.Impl
         private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
         private readonly Vector2 size = new Vector2(32, 32);
+        private readonly LocomotionBody _locomotionBody;
         // private readonly Vector2 size = new Vector2(16, 24);
         // private readonly Vector2 halfSize = new Vector2(16, 24)/2;
+
+        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
+        {
+            Transform.Position += new Vector2(40, 40);
+            _worldScene = worldScene;
+            _locomotionBody = new PlayerLocomotionBody(this, Transform);
+        }
+        
         public GameLevel? SwitchLevel(GameLevel gameLevel)
         {
             var old = _currentLevel;
@@ -25,10 +35,9 @@ namespace Core.Lib.Entities.Impl
             return old;
         }
 
-        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
+        public RaycastContext GetRaycastContext()
         {
-            Transform.Position += new Vector2(40, 40);
-            _worldScene = worldScene;
+            return _currentLevel.CollsionManager;
         }
 
         public override void Update(float deltaTime)
@@ -37,19 +46,23 @@ namespace Core.Lib.Entities.Impl
             var keyboardState = Keyboard.GetState();
 
             const float movementSpeed = 200;
+            Vector2 movementInput = new Vector2();
 
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                Move(new Vector2(0, -movementSpeed) * deltaTime);
+                movementInput += new Vector2(0, -movementSpeed);
 
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                Move(new Vector2(-movementSpeed, 0) * deltaTime);
+                movementInput += new Vector2(-movementSpeed, 0);
 
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                Move(new Vector2(0, movementSpeed) * deltaTime);
+                movementInput += new Vector2(0, movementSpeed);
 
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                Move(new Vector2(movementSpeed, 0) * deltaTime);
+                movementInput += new Vector2(movementSpeed, 0);
 
+            _locomotionBody.Move(movementInput);
+            _locomotionBody.Update(deltaTime);
+            
             var center = BodyCenter;
             
             // Still same room so ignore

@@ -10,5 +10,7 @@ namespace Core.Lib.Entities
         /// <param name="gameLevel">the new level</param>
         /// <returns>the old level or null</returns>
         GameLevel? SwitchLevel(GameLevel gameLevel);
+
+        RaycastContext GetRaycastContext();
     }
 }

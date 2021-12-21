@@ -25,11 +25,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lib\IUpdateable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\GameLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\IScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Math\LineF.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Math\Vectors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\CollisionEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\CollisionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\ICollisionTarget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Locomotion\LocomotionBody.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Locomotion\Effects.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Locomotion\PlayerLocomotionBody.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Quadtree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\QuadtreeData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\RaycastContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\StaticCollisionTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\BaseScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\WorldScene.cs" />

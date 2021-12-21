@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Lib.Math;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace Core.Lib.Physics
 {
-    public class CollisionManager: IUpdateable
+    public class CollisionManager: IUpdateable, RaycastContext
     {
         private readonly Dictionary<ICollisionTarget, QuadtreeData> _targetDataDictionary =
             new Dictionary<ICollisionTarget, QuadtreeData>();
@@ -151,6 +152,11 @@ namespace Core.Lib.Physics
                     spriteBatch.DrawRectangle(rect, Color.Lime, 2);
                 }
             }
+        }
+
+        public RaycastHit Raycast(Vector2 origin, Vector2 direction, float distance, Func<ICollisionTarget, bool> shouldHit)
+        {
+            return _collisionTree.Raycast(new LineF(origin, direction, distance), shouldHit);
         }
     }
 }
