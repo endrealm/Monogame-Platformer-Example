@@ -95,7 +95,7 @@ namespace Core
             _spriteBatch.End();
 
             
-            DebugCamera();
+            // DebugCamera();
 
             base.Draw(gameTime);
         }
