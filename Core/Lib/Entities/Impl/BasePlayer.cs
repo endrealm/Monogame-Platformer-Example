@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using Core.Lib.Entities.Rendering;
+using Core.Lib.Input;
+using Core.Lib.Input.Impl;
 using Core.Lib.Physics;
 using Core.Lib.Physics.Locomotion;
 using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
 namespace Core.Lib.Entities.Impl
@@ -15,15 +16,20 @@ namespace Core.Lib.Entities.Impl
         private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
         private readonly Vector2 size = new Vector2(32, 32);
-        private readonly LocomotionBody _locomotionBody;
         // private readonly Vector2 size = new Vector2(16, 24);
         // private readonly Vector2 halfSize = new Vector2(16, 24)/2;
+
+        private readonly IPlayerInput _playerInput;
+        private readonly LocomotionBody _locomotionBody;
+        private readonly IPlayerController _playerController;
 
         public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
         {
             Transform.Position += new Vector2(40, 40);
             _worldScene = worldScene;
+            _playerInput = new KeyboardPlayerInput();
             _locomotionBody = new PlayerLocomotionBody(this, Transform);
+            _playerController = new BasicPlayerController(_locomotionBody, _playerInput);
         }
         
         public GameLevel? SwitchLevel(GameLevel gameLevel)
@@ -35,50 +41,36 @@ namespace Core.Lib.Entities.Impl
             return old;
         }
 
-        public RaycastContext GetRaycastContext()
+        public RaycastContext? GetRaycastContext()
         {
-            return _currentLevel.CollsionManager;
+            return _currentLevel?.CollsionManager ?? null;
         }
-
-        private VelocityEffect jumpEffect = new VelocityEffect(new Vector2());
-
+        
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-            var keyboardState = Keyboard.GetState();
-
-            const float movementSpeed = 200;
             
-            Vector2 movementInput = new Vector2();
-
-            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                movementInput += new Vector2(-movementSpeed, 0);
-
-
-            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                movementInput += new Vector2(movementSpeed, 0);
-
-            _locomotionBody.Move(movementInput);
+            _playerInput.Update(deltaTime);
             
-            if (_locomotionBody.IsCeilingAtHead())
-            {
-                jumpEffect.Cancel();
-            }
-            if (_locomotionBody.IsGrounded() && (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up)))
-            {
-                jumpEffect.Cancel();
-                jumpEffect = new LinearDecayingVelocityEffect(new Vector2(0, -200f), new Vector2(0, 70f), true);
-                _locomotionBody.AddVelocityEffect(jumpEffect);
-            }
-            
+            _playerController.Update(deltaTime);
+
             _locomotionBody.Update(deltaTime);
             
-            var center = BodyCenter;
+            _playerController.PostBodyUpdate(deltaTime);
             
+            
+            CheckAndChangeRoom();
+        }
+
+        private void CheckAndChangeRoom()
+        {
+            // Detect if room changed
+            var center = BodyCenter;
+
             // Still same room so ignore
-            if(_currentLevel?.GetBoundingRect().Contains(center) ?? true) return;
+            if (_currentLevel?.GetBoundingRect().Contains(center) ?? true) return;
             var newLevel = _worldScene.Levels.FirstOrDefault(level => level.GetBoundingRect().Contains(center));
-            if(newLevel == null) return;
+            if (newLevel == null) return;
             _worldScene.ChangeActiveLevel(newLevel);
             SwitchLevel(newLevel);
         }
