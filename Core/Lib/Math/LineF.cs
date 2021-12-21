@@ -6,25 +6,25 @@ namespace Core.Lib.Math
 {
     public class LineF
     {
-        private readonly Vector2 _origin;
-        private readonly Vector2 _direction;
-        private readonly float _distance;
+        public readonly Vector2 Origin;
+        public readonly Vector2 Direction;
+        public readonly float Distance;
 
-        private readonly Vector2 _end;
+        public readonly Vector2 End;
 
         public LineF(Vector2 origin, Vector2 direction, float distance)
         {
-            _origin = origin;
-            _direction = direction;
-            _distance = distance;
-            _end = origin + direction * distance;
+            Origin = origin;
+            Direction = direction;
+            Distance = distance;
+            End = origin + direction * distance;
         }
 
         public bool IntersectsWith(IShapeF shape)
         {
             if (shape is RectangleF rect)
             {
-                if (rect.Contains(_origin) || rect.Contains(_end)) return true;
+                if (rect.Contains(Origin) || rect.Contains(End)) return true;
                 
                 // Todo check if segment intersects
                 return false;

@@ -12,12 +12,12 @@ namespace Core.Lib.Physics.Locomotion
     {
 
 
-        private readonly float gravityMultiplier = 10f;
+        private readonly float gravityMultiplier = 20f;
         private readonly float gravityThreshold = 200f;
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;
         
-        private readonly float hitDensity = 1f;
+        private readonly float hitDensity = 2f;
         
         private readonly float castDensity = 4f;
         
@@ -105,7 +105,7 @@ namespace Core.Lib.Physics.Locomotion
 
         private void CalculateGravity(float deltaTime)
         {
-            _gravity += gravityMultiplier * gravityMultiplier *deltaTime;
+            _gravity += gravityMultiplier * gravityMultiplier * deltaTime;
             if (_gravity > gravityThreshold)
             {
                 _gravity = gravityThreshold;
@@ -174,7 +174,6 @@ namespace Core.Lib.Physics.Locomotion
                 var hits = BlockedX(xDelta, Vectors.Left);
                 if (hits.Length > 0){
                     leftHits = hits;
-                    delta.X = iterations * -hitDensity;
                     return true;
                 }
                 xDelta -= hitDensity;
@@ -197,7 +196,6 @@ namespace Core.Lib.Physics.Locomotion
                 if (hits.Length > 0)
                 {
                     rightHits = hits;
-                    delta.X = iterations * hitDensity;
                     return true;
                 }
                 xDelta += hitDensity;
@@ -209,45 +207,43 @@ namespace Core.Lib.Physics.Locomotion
         {
             upHits = Array.Empty<ICollisionTarget>();
             
-            if (delta.Y <= 0) return false; // Not moving up
+            if (delta.Y >= 0) return false; // Not moving up
 
-            var yDelta = 0.000001f;
+            var yDelta = -0.000001f;
             var iterations = 0;
             do
             {
-                var hits = BlockedY(yDelta, Vectors.Up);
+                var hits = BlockedY(yDelta, -Vectors.Up);
                 if (hits.Length > 0)
                 {
                     upHits = hits;
-                    delta.Y = iterations * hitDensity;
                     return true;
                 }
-                yDelta += hitDensity;
+                yDelta -= hitDensity;
                 iterations++;
-            } while (yDelta < delta.Y);
+            } while (yDelta > delta.Y);
             return false;
         }
         bool DownBlocked(ref Vector2 delta)
         {
             downHits = Array.Empty<ICollisionTarget>();
             
-            if (delta.Y >= 0) return false; // Not moving down
+            if (delta.Y <= 0) return false; // Not moving down
 
-            var yDelta = -0.000001f;
+            var yDelta = 0.000001f;
             var iterations = 0;
             do
             {
-                var hits = BlockedY(yDelta, Vectors.Down);
+                var hits = BlockedY(yDelta, -Vectors.Down);
                 if (hits.Length > 0)
                 {
                     downHits = hits;
                     _gravity = 0;
-                    delta.Y = iterations * -hitDensity;
                     return true;
                 }
-                yDelta -= hitDensity;
+                yDelta += hitDensity;
                 iterations++;
-            } while (yDelta > delta.Y);
+            } while (yDelta < delta.Y);
 
             return false;
         }
@@ -256,7 +252,7 @@ namespace Core.Lib.Physics.Locomotion
         {
             var modifier = delta > 0 ? 1 : -1;
             var start = Hitbox.Center;
-            start.X += modifier * (Hitbox.Width / 2 - hitDensity);
+            start.X += modifier * (Hitbox.Width / 2);
 
             var halfHeight = Hitbox.Height / 2;
             var list = new List<ICollisionTarget>();
@@ -278,15 +274,15 @@ namespace Core.Lib.Physics.Locomotion
         {
             var modifier = delta > 0 ? 1 : -1;
             var start = Hitbox.Center;
-            start.Y += modifier * (Hitbox.Height / 2-hitDensity);
+            start.Y += modifier * (Hitbox.Height / 2);
             
             var halfWidth = Hitbox.Width / 2;
             var list = new List<ICollisionTarget>();
-            for (var i = -halfWidth+0.05f; i <= halfWidth-0.05f; i += castDensity)
+            for (var i = -halfWidth+2f; i <= halfWidth-2f; i += castDensity)
             {
                 var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, hitDensity, target => target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(i,delta), direction, hitDensity, worldMask);
-                // Debug.DrawRay(start + new Vector2(i,delta), direction, Color.green, Time.deltaTime);
+                DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, hitDensity), Color.Pink);
                 if (hit != null)
                 {
                     list.Add(hit.collider);

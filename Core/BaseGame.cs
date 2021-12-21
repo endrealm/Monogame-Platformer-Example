@@ -2,6 +2,7 @@
 using Core.Lib;
 using Core.Lib.Entities.Rendering;
 using Core.Lib.Entities.Rendering.Impl;
+using Core.Lib.Math;
 using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -90,7 +91,7 @@ namespace Core
             _spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
             
             _activeScene.Draw(_spriteBatch);
-
+            DebugDrawer.DrawAll(_spriteBatch);
             _spriteBatch.End();
 
             

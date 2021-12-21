@@ -64,7 +64,7 @@ namespace Core.Lib.Physics.Locomotion
             if (_modifier.Y > 0)
             {
                 if (!(Direction.Y >= 0)) return;
-                Direction = new Vector2(Direction.Y, 0);
+                Direction = new Vector2(Direction.X, 0);
             }
             else if(_modifier.Y < 0)
             {

@@ -149,7 +149,7 @@ namespace Core.Lib.Physics
                 var shape = data.Bounds;
                 if (shape is RectangleF rect)
                 {
-                    spriteBatch.DrawRectangle(rect, Color.Lime, 2);
+                    spriteBatch.DrawRectangle(rect, Color.Lime, 1);
                 }
             }
         }

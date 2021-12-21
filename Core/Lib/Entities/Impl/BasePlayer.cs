@@ -40,27 +40,37 @@ namespace Core.Lib.Entities.Impl
             return _currentLevel.CollsionManager;
         }
 
+        private VelocityEffect jumpEffect = new VelocityEffect(new Vector2());
+
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
             var keyboardState = Keyboard.GetState();
 
             const float movementSpeed = 200;
+            
             Vector2 movementInput = new Vector2();
-
-            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                movementInput += new Vector2(0, -movementSpeed);
 
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
                 movementInput += new Vector2(-movementSpeed, 0);
 
-            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                movementInput += new Vector2(0, movementSpeed);
 
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
                 movementInput += new Vector2(movementSpeed, 0);
 
             _locomotionBody.Move(movementInput);
+            
+            if (_locomotionBody.IsCeilingAtHead())
+            {
+                jumpEffect.Cancel();
+            }
+            if (_locomotionBody.IsGrounded() && (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up)))
+            {
+                jumpEffect.Cancel();
+                jumpEffect = new LinearDecayingVelocityEffect(new Vector2(0, -200f), new Vector2(0, 70f), true);
+                _locomotionBody.AddVelocityEffect(jumpEffect);
+            }
+            
             _locomotionBody.Update(deltaTime);
             
             var center = BodyCenter;
