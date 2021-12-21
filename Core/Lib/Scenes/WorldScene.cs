@@ -15,6 +15,7 @@ namespace Core.Lib.Scenes
         public GameLevel[] Levels => _levels;
 
         private readonly string worldName;
+        private Vector2 initialSpawn;
 
         public WorldScene(Vector2 dimensions, string worldName): base(dimensions)
         {
@@ -34,7 +35,7 @@ namespace Core.Lib.Scenes
 
         public override void Start()
         {
-            new BasePlayer(this, SceneManager.EntityRendererRegistry).SwitchLevel(_activeLevel);
+            new BasePlayer(this, SceneManager.EntityRendererRegistry, initialSpawn).SwitchLevel(_activeLevel);
             _activeLevel.Start(SceneManager.CameraController);
         }
 
@@ -54,6 +55,8 @@ namespace Core.Lib.Scenes
                 if (gameLevel.GetId().Equals("Start"))
                 {
                     _activeLevel = gameLevel;
+                    var spawnEntity = _activeLevel.GetLevel().GetEntity("Initial_Spawn");
+                    initialSpawn = spawnEntity.Position;
                 }
             }
         }

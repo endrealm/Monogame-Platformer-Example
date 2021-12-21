@@ -116,5 +116,10 @@ namespace Core.Lib
         {
             return new RectangleF(_level.Position, _level.Size);
         }
+
+        public LDtkLevel GetLevel()
+        {
+            return _level;
+        }
     }
 }

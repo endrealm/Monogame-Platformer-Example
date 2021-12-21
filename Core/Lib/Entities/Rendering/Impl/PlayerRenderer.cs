@@ -10,7 +10,7 @@ namespace Core.Lib.Entities.Rendering.Impl
         private AnimatedSprite sprite;
         public void LoadContent(ContentManager contentManager)
         {
-            var doc = contentManager.Load<AsepriteDocument>("Entities/test");
+            var doc = contentManager.Load<AsepriteDocument>("Entities/player");
             sprite = new AnimatedSprite(doc);
         }
         
@@ -21,7 +21,7 @@ namespace Core.Lib.Entities.Rendering.Impl
         
         public void Render(SpriteBatch spriteBatch, IPlayer entity)
         {
-            sprite.Position = entity.Transform.WorldPosition;
+            sprite.Position = entity.Transform.WorldPosition - sprite.CurrentFrame.Bounds.Size.ToVector2()/2;
             sprite.Scale = entity.Transform.WorldScale;
             sprite.Rotation = entity.Transform.WorldRotation;
             sprite.Render(spriteBatch);

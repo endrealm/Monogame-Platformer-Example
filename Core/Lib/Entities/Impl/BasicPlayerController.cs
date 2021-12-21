@@ -23,7 +23,7 @@ namespace Core.Lib.Entities.Impl
         public void Update(float deltaTime)
         {
 
-            const float movementSpeed = 200;
+            const float movementSpeed = 100;
             
             Vector2 movementInput = new Vector2();
 

@@ -15,17 +15,17 @@ namespace Core.Lib.Entities.Impl
     {
         private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
-        private readonly Vector2 size = new Vector2(32, 32);
-        // private readonly Vector2 size = new Vector2(16, 24);
-        // private readonly Vector2 halfSize = new Vector2(16, 24)/2;
+        private readonly Vector2 _size = new Vector2(16, 24);
+        private readonly Vector2 _halfSize = new Vector2(16, 24)/2;
+        public Vector2 HalfSize => _halfSize;
 
         private readonly IPlayerInput _playerInput;
         private readonly LocomotionBody _locomotionBody;
         private readonly IPlayerController _playerController;
 
-        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
+        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry, Vector2 initialSpawn) : base(rendererRegistry.GetRenderer<IPlayer>())
         {
-            Transform.Position += new Vector2(40, 40);
+            Transform.Position = initialSpawn-new Vector2(0, _size.Y/2);
             _worldScene = worldScene;
             _playerInput = new KeyboardPlayerInput();
             _locomotionBody = new PlayerLocomotionBody(this, Transform);
@@ -75,7 +75,7 @@ namespace Core.Lib.Entities.Impl
             SwitchLevel(newLevel);
         }
 
-        public IShapeF Bounds => new RectangleF(Transform.WorldPosition, size);
+        public IShapeF Bounds => new RectangleF(Transform.WorldPosition - _halfSize, _size);
         public bool StaticCollider => false;
 
         public void OnCollision(CollisionEventArgs collisionInfo)

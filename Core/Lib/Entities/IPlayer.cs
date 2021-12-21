@@ -1,4 +1,5 @@
 ﻿using Core.Lib.Physics;
+using Microsoft.Xna.Framework;
 
 namespace Core.Lib.Entities
 {
@@ -12,5 +13,7 @@ namespace Core.Lib.Entities
         GameLevel? SwitchLevel(GameLevel gameLevel);
 
         RaycastContext GetRaycastContext();
+        
+        Vector2 HalfSize { get; }
     }
 }
