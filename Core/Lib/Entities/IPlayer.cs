@@ -1,6 +1,8 @@
-﻿namespace Core.Lib.Entities
+﻿using Core.Lib.Physics;
+
+namespace Core.Lib.Entities
 {
-    public interface IPlayer: ILivingEntity
+    public interface IPlayer: ILivingEntity, ICollisionTarget
     {
         /// <summary>
         /// Switches the currently assigned level

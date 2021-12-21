@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Core.Lib.Entities;
+using Core.Lib.Physics;
 using LDtk;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -13,20 +14,42 @@ namespace Core.Lib
     {
         private readonly LDtkLevel _level;
         private HashSet<IEntity> _entities = new HashSet<IEntity>();
+        private CollisionManager _collisionManager;
 
         public GameLevel(LDtkLevel level)
         {
             _level = level;
+            _collisionManager = new CollisionManager(new RectangleF(
+                level.Position,
+                level.Size
+            ));
+
+            LoadStaticColliders();
         }
-        
+
+        private void LoadStaticColliders()
+        {
+            
+        }
+
         public void AddEntity(IEntity entity)
         {
             _entities.Add(entity);
+            
+            if (entity is ICollisionTarget target)
+            {
+                _collisionManager.Insert(target);
+            }
         }
         
         public void RemoveEntity(IEntity entity)
         {
             _entities.Remove(entity);
+            
+            if (entity is ICollisionTarget target)
+            {
+                _collisionManager.Remove(target);
+            }
         }
 
         public void Update(float deltaTime)
@@ -35,6 +58,8 @@ namespace Core.Lib
             {
                 entity.Update(deltaTime);
             }
+            
+            _collisionManager.Update(deltaTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)

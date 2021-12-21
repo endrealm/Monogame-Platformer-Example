@@ -25,6 +25,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lib\IUpdateable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\GameLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\IScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\CollisionEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\CollisionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\ICollisionTarget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Quadtree.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\QuadtreeData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\BaseScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\WorldScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\MenuScene.cs" />

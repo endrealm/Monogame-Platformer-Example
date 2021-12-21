@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using Core.Lib.Entities.Rendering;
+using Core.Lib.Physics;
 using Core.Lib.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace Core.Lib.Entities.Impl
 {
@@ -11,6 +13,8 @@ namespace Core.Lib.Entities.Impl
     {
         private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
+        private readonly Vector2 size = new Vector2(16, 24);
+        private readonly Vector2 halfSize = new Vector2(16, 24)/2;
         public GameLevel? SwitchLevel(GameLevel gameLevel)
         {
             var old = _currentLevel;
@@ -22,6 +26,7 @@ namespace Core.Lib.Entities.Impl
 
         public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry) : base(rendererRegistry.GetRenderer<IPlayer>())
         {
+            Transform.Position += new Vector2(20, 20);
             _worldScene = worldScene;
         }
 
@@ -52,6 +57,14 @@ namespace Core.Lib.Entities.Impl
             if(newLevel == null) return;
             _worldScene.ChangeActiveLevel(newLevel);
             SwitchLevel(newLevel);
+        }
+
+        public IShapeF Bounds => new RectangleF(Transform.WorldPosition, size);
+        public bool StaticCollider => false;
+
+        public void OnCollision(CollisionEventArgs collisionInfo)
+        {
+            Transform.Position -= collisionInfo.PenetrationVector;
         }
     }
 }

@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 94,
+	"nextUid": 95,
 	"worldLayout": "Free",
 	"worldGridWidth": 320,
 	"worldGridHeight": 180,
@@ -908,8 +908,8 @@
 			"tileGridSize": 8,
 			"spacing": 0,
 			"padding": 0,
-			"tagsSourceEnumUid": null,
-			"enumTags": [],
+			"tagsSourceEnumUid": 94,
+			"enumTags": [ { "enumValueId": "Dirt", "tileIds": [0,1,2,8,10,16,17,18,44,45,52,53,60] }, { "enumValueId": "Metal", "tileIds": [24,25,32] }, { "enumValueId": "Stone", "tileIds": [3,4,5,11,13,19,20,21,46,47,54,55,62] } ],
 			"customData": [],
 			"savedSelections": [],
 			"cachedPixelData": {
@@ -917,7 +917,11 @@
 				"averageColors": "e754f643e754d888e788e99900000000f643f000f643e777f000e88800000000e754f643e754d999e788e88800000000f789f678000000000000000000000000f6780000000000005ffff000000000000000000000000000f432f432f666f5550000000000000000f432f432f555f5660000000000000000b7540000a9990000"
 			}
 		}
-	], "enums": [], "externalEnums": [], "levelFields": [] },
+	], "enums": [{ "identifier": "CollisionMaterial", "uid": 94, "values": [
+		{ "id": "Dirt", "tileId": null, "color": 4001551, "__tileSrcRect": null },
+		{ "id": "Metal", "tileId": null, "color": 9669258, "__tileSrcRect": null },
+		{ "id": "Stone", "tileId": null, "color": 2587804, "__tileSrcRect": null }
+	], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null }], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{
 			"identifier": "Start",
