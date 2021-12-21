@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BaseGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\CameraController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\IDamageSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\IEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\ILivingEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Entities\Impl\BaseEntity.cs" />
@@ -42,6 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\Quadtree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\QuadtreeData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\RaycastContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\SpikeCollisionTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Physics\StaticCollisionTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\BaseScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lib\Scenes\WorldScene.cs" />

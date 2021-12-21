@@ -22,10 +22,13 @@ namespace Core.Lib.Entities.Impl
         private readonly IPlayerInput _playerInput;
         private readonly LocomotionBody _locomotionBody;
         private readonly IPlayerController _playerController;
+        
+        private Vector2 _lastCheckpoint;
 
-        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry, Vector2 initialSpawn) : base(rendererRegistry.GetRenderer<IPlayer>())
+        public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry, Vector2 initialSpawn) : base(rendererRegistry.GetRenderer<IPlayer>(), 1)
         {
-            Transform.Position = initialSpawn-new Vector2(0, _size.Y/2);
+            Transform.Position = initialSpawn - new Vector2(-_size.X/2, _size.Y / 2);
+            _lastCheckpoint = initialSpawn - new Vector2(-_size.X/2, _size.Y / 2);
             _worldScene = worldScene;
             _playerInput = new KeyboardPlayerInput();
             _locomotionBody = new PlayerLocomotionBody(this, Transform);
@@ -62,6 +65,14 @@ namespace Core.Lib.Entities.Impl
             CheckAndChangeRoom();
         }
 
+        public override bool Die()
+        {
+            FullHeal();
+            Transform.Position = _lastCheckpoint;
+            CheckAndChangeRoom();
+            return false;
+        }
+
         private void CheckAndChangeRoom()
         {
             // Detect if room changed
@@ -77,9 +88,16 @@ namespace Core.Lib.Entities.Impl
 
         public IShapeF Bounds => new RectangleF(Transform.WorldPosition - _halfSize, _size);
         public bool StaticCollider => false;
+        public bool TriggerOnly => false;
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
+            var other = collisionInfo.Other;
+            if (other.TriggerOnly)
+            {
+                return;
+            }
+            
             Transform.Position -= collisionInfo.PenetrationVector;
         }
     }

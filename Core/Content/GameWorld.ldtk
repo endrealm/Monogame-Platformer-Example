@@ -1022,7 +1022,7 @@
 			"spacing": 0,
 			"padding": 0,
 			"tagsSourceEnumUid": 94,
-			"enumTags": [ { "enumValueId": "Dirt", "tileIds": [0,1,2,8,10,16,17,18,44,45,52,53,60] }, { "enumValueId": "Metal", "tileIds": [24,25,32] }, { "enumValueId": "Stone", "tileIds": [3,4,5,11,13,19,20,21,46,47,54,55,62] } ],
+			"enumTags": [ { "enumValueId": "Dirt", "tileIds": [0,1,2,8,10,16,17,18,44,45,52,53,60] }, { "enumValueId": "Metal", "tileIds": [24,25,32] }, { "enumValueId": "Stone", "tileIds": [3,4,5,11,13,19,20,21,46,47,54,55,62] }, { "enumValueId": "Deadly", "tileIds": [35,36] } ],
 			"customData": [],
 			"savedSelections": [],
 			"cachedPixelData": {
@@ -1033,7 +1033,8 @@
 	], "enums": [{ "identifier": "CollisionMaterial", "uid": 94, "values": [
 		{ "id": "Dirt", "tileId": null, "color": 4001551, "__tileSrcRect": null },
 		{ "id": "Metal", "tileId": null, "color": 9669258, "__tileSrcRect": null },
-		{ "id": "Stone", "tileId": null, "color": 2587804, "__tileSrcRect": null }
+		{ "id": "Stone", "tileId": null, "color": 2587804, "__tileSrcRect": null },
+		{ "id": "Deadly", "tileId": null, "color": 16711766, "__tileSrcRect": null }
 	], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null }], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{

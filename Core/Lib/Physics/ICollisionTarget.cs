@@ -6,6 +6,7 @@ namespace Core.Lib.Physics
     {
         IShapeF Bounds { get; }
         bool StaticCollider { get; }
+        bool TriggerOnly { get; }
 
         void OnCollision(CollisionEventArgs collisionInfo);
     }

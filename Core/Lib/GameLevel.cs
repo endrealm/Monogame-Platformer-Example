@@ -43,7 +43,15 @@ namespace Core.Lib
                         if(data == null) continue;
                         
                         if(!data.EnumData.EnumName.Equals("CollisionMaterial")) continue;
-                        _collisionManager.Insert(new StaticCollisionTarget(new RectangleF(_level.Position + new Vector2(x, y) * layerData.GridCellSize, new Vector2(1,1) * layerData.GridCellSize)));
+                        var shape = new RectangleF(_level.Position + new Vector2(x, y) * layerData.GridCellSize, new Vector2(1,1) * layerData.GridCellSize);
+
+                        if (data.EnumData.Values.Contains("Deadly"))
+                        {
+                            _collisionManager.Insert(new SpikeCollisionTarget(shape));
+                            continue;
+                        }
+                        
+                        _collisionManager.Insert(new StaticCollisionTarget(shape));
                     }
                 }
             }
