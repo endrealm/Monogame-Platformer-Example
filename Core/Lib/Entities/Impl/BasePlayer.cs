@@ -18,6 +18,10 @@ namespace Core.Lib.Entities.Impl
         private readonly Vector2 _size = new Vector2(16, 24);
         private readonly Vector2 _halfSize = new Vector2(16, 24)/2;
         public Vector2 HalfSize => _halfSize;
+        public void SetSpawn(Vector2 spawnPoint)
+        {
+            _lastCheckpoint = spawnPoint - new Vector2(-_size.X / 2, _size.Y / 2);
+        }
 
         private readonly IPlayerInput _playerInput;
         private readonly LocomotionBody _locomotionBody;
@@ -27,8 +31,9 @@ namespace Core.Lib.Entities.Impl
 
         public BasePlayer(WorldScene worldScene, RendererRegistry rendererRegistry, Vector2 initialSpawn) : base(rendererRegistry.GetRenderer<IPlayer>(), 1)
         {
-            Transform.Position = initialSpawn - new Vector2(-_size.X/2, _size.Y / 2);
-            _lastCheckpoint = initialSpawn - new Vector2(-_size.X/2, _size.Y / 2);
+            SetSpawn(initialSpawn);
+            Transform.Position = _lastCheckpoint;
+            
             _worldScene = worldScene;
             _playerInput = new KeyboardPlayerInput();
             _locomotionBody = new PlayerLocomotionBody(this, Transform);

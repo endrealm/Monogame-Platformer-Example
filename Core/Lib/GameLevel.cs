@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Lib.Data;
 using Core.Lib.Entities;
 using Core.Lib.Physics;
 using LDtk;
@@ -26,6 +27,14 @@ namespace Core.Lib
             ));
 
             LoadStaticColliders();
+            foreach (var spawnPoint in _level.GetEntities<SpawnPointLDtkEntity>("Spawn_Zone"))
+            {
+                _collisionManager.Insert(new SpawnPointCollisionTarget(
+                    new RectangleF(spawnPoint.Position, spawnPoint.Size),
+                    spawnPoint.Spawn * new Vector2(8,8) + level.Position
+                    )
+                );
+            }
         }
 
         public CollisionManager CollsionManager => _collisionManager;

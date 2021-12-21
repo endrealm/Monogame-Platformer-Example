@@ -939,7 +939,7 @@
 		}
 	], "entities": [
 		{
-			"identifier": "SpawnZoneChangeTrigger",
+			"identifier": "Spawn_Zone",
 			"uid": 98,
 			"tags": ["spawn_zone_trigger"],
 			"width": 24,
@@ -2040,7 +2040,7 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "SpawnZoneChangeTrigger",
+							"__identifier": "Spawn_Zone",
 							"__grid": [3,0],
 							"__pivot": [0,0],
 							"__tile": null,

@@ -259,7 +259,7 @@ namespace Core.Lib.Physics.Locomotion
 
             for (var i = -halfHeight+0.05f; i <= halfHeight-0.05f; i += castDensity)
             {
-                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, hitDensity, target => target != _target);
+                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, hitDensity, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(delta,i), direction, hitDensity, worldMask);
                 // Debug.DrawRay(start + new Vector2(delta,i), direction, Color.green, Time.deltaTime);
                 if (hit != null)
@@ -280,7 +280,7 @@ namespace Core.Lib.Physics.Locomotion
             var list = new List<ICollisionTarget>();
             for (var i = -halfWidth+2f; i <= halfWidth-2f; i += castDensity)
             {
-                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, hitDensity, target => target != _target);
+                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, hitDensity, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(i,delta), direction, hitDensity, worldMask);
                 DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, hitDensity), Color.Pink);
                 if (hit != null)

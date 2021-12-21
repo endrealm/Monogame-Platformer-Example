@@ -15,5 +15,6 @@ namespace Core.Lib.Entities
         RaycastContext GetRaycastContext();
         
         Vector2 HalfSize { get; }
+        void SetSpawn(Vector2 spawnPoint);
     }
 }
