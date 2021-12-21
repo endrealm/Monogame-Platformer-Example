@@ -1245,7 +1245,7 @@ namespace LDtk.Json
     /// <summary>
     /// Possible values: `Stretch`, `Crop`
     /// </summary>
-    public enum TileRenderMode { Crop, Stretch };
+    public enum TileRenderMode { Crop, Stretch, FitInside };
 
     /// <summary>
     /// Type of the layer as Haxe Enum Possible values: `IntGrid`, `Entities`, `Tiles`,
@@ -1692,6 +1692,7 @@ namespace LDtk.Json
             {
                 "Crop" => TileRenderMode.Crop,
                 "Stretch" => TileRenderMode.Stretch,
+                "FitInside" => TileRenderMode.FitInside,
                 _ => throw new Exception("Cannot unmarshal type TileRenderMode"),
             };
         }
@@ -1711,6 +1712,9 @@ namespace LDtk.Json
                     return;
                 case TileRenderMode.Stretch:
                     serializer.Serialize(writer, "Stretch");
+                    return;
+                case TileRenderMode.FitInside:
+                    serializer.Serialize(writer, "FitInside");
                     return;
                 default:
                     break;
