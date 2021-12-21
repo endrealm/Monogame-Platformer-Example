@@ -8,7 +8,7 @@ namespace Core.Lib.Math
 {
     public class DebugDrawer
     {
-        public static readonly bool DEBUG = true;
+        public static readonly bool DEBUG = false;
         private static List<Tuple<LineF, Color>> lines = new List<Tuple<LineF, Color>>();
         public static void DrawLine(LineF line, Color green)
         {
