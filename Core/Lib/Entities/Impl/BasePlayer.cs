@@ -103,7 +103,7 @@ namespace Core.Lib.Entities.Impl
                 return;
             }
             
-            Transform.Position -= collisionInfo.PenetrationVector;
+            // Transform.Position -= collisionInfo.PenetrationVector;
         }
     }
 }

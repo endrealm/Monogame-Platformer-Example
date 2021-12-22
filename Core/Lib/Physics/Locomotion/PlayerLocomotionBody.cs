@@ -17,9 +17,10 @@ namespace Core.Lib.Physics.Locomotion
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;
         
-        private readonly float hitDensity = 2f;
+        private readonly float hitDensity = 1f;
+        private readonly float hitExt = .5f;
         
-        private readonly float castDensity = 4f;
+        private readonly float castDensity = 1f;
         
         private readonly List<FreezeEffect> _freezeEffects = new List<FreezeEffect>();
         private readonly List<VelocityEffect> _velocityEffects = new List<VelocityEffect>();
@@ -140,11 +141,30 @@ namespace Core.Lib.Physics.Locomotion
             
             #region Validate new location
 
-            LeftBlocked(ref delta);
-            RightBlocked(ref delta);
+            var leftDistance = LeftBlocked(ref delta);
+            var rightDistance = RightBlocked(ref delta);
+            var downDistance = DownBlocked(ref delta);
+            var upDistance = UpBlocked(ref delta);
+            if(delta.X <= -leftDistance)
+            {
+                delta.X = -leftDistance;
+            }
+            
+            if(delta.X >= rightDistance)
+            {
+                delta.X = rightDistance;
+            }
 
-            DownBlocked(ref delta);
-            UpBlocked(ref delta);
+            if (delta.Y >= downDistance)
+            {
+                delta.Y = downDistance;
+                _gravity = 0; // Reset gravity
+            }
+
+            if (delta.Y<= -upDistance)
+            {
+                delta.Y = -upDistance;
+            }
 
             #endregion
 
@@ -161,12 +181,10 @@ namespace Core.Lib.Physics.Locomotion
 
         #region HitBox Calls
 
-        bool LeftBlocked(ref Vector2 delta)
+        float LeftBlocked(ref Vector2 delta)
         {
             leftHits = Array.Empty<ICollisionTarget>();
             
-            if (delta.X >= 0) return false; // Not moving left
-
             var xDelta = -0.000001f;
             var iterations = 0;
             do
@@ -174,19 +192,17 @@ namespace Core.Lib.Physics.Locomotion
                 var hits = BlockedX(xDelta, Vectors.Left);
                 if (hits.Length > 0){
                     leftHits = hits;
-                    return true;
+                    return iterations * hitDensity;
                 }
                 xDelta -= hitDensity;
                 iterations++;
             } while (xDelta > delta.X);
 
-            return false;
+            return iterations * hitDensity;
         }
-        bool RightBlocked(ref Vector2 delta)
+        float RightBlocked(ref Vector2 delta)
         {
             rightHits = Array.Empty<ICollisionTarget>();
-
-            if (delta.X <= 0) return false; // Not moving right
             
             var xDelta = 0.000001f;
             var iterations = 0;
@@ -196,19 +212,17 @@ namespace Core.Lib.Physics.Locomotion
                 if (hits.Length > 0)
                 {
                     rightHits = hits;
-                    return true;
+                    return iterations * hitDensity;
                 }
                 xDelta += hitDensity;
                 iterations++;
             } while (xDelta < delta.X);
-            return false;
+            return iterations * hitDensity;
         }
-        bool UpBlocked(ref Vector2 delta)
+        float UpBlocked(ref Vector2 delta)
         {
             upHits = Array.Empty<ICollisionTarget>();
             
-            if (delta.Y >= 0) return false; // Not moving up
-
             var yDelta = -0.000001f;
             var iterations = 0;
             do
@@ -217,19 +231,17 @@ namespace Core.Lib.Physics.Locomotion
                 if (hits.Length > 0)
                 {
                     upHits = hits;
-                    return true;
+                    return iterations * hitDensity;
                 }
                 yDelta -= hitDensity;
                 iterations++;
             } while (yDelta > delta.Y);
-            return false;
+            return iterations * hitDensity;
         }
-        bool DownBlocked(ref Vector2 delta)
+        float DownBlocked(ref Vector2 delta)
         {
             downHits = Array.Empty<ICollisionTarget>();
             
-            if (delta.Y <= 0) return false; // Not moving down
-
             var yDelta = 0.000001f;
             var iterations = 0;
             do
@@ -238,14 +250,13 @@ namespace Core.Lib.Physics.Locomotion
                 if (hits.Length > 0)
                 {
                     downHits = hits;
-                    _gravity = 0;
-                    return true;
+                    return iterations * hitDensity;
                 }
                 yDelta += hitDensity;
                 iterations++;
             } while (yDelta < delta.Y);
 
-            return false;
+            return iterations * hitDensity;
         }
         
         ICollisionTarget[] BlockedX(float delta, Vector2 direction)
@@ -259,7 +270,7 @@ namespace Core.Lib.Physics.Locomotion
 
             for (var i = -halfHeight+0.05f; i <= halfHeight-0.05f; i += castDensity)
             {
-                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, hitDensity, target => !target.TriggerOnly && target != _target);
+                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, hitDensity + hitExt, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(delta,i), direction, hitDensity, worldMask);
                 // Debug.DrawRay(start + new Vector2(delta,i), direction, Color.green, Time.deltaTime);
                 if (hit != null)
@@ -282,7 +293,7 @@ namespace Core.Lib.Physics.Locomotion
             {
                 var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, hitDensity, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(i,delta), direction, hitDensity, worldMask);
-                DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, hitDensity), Color.Pink);
+                DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, hitDensity + hitExt), Color.Pink);
                 if (hit != null)
                 {
                     list.Add(hit.collider);
