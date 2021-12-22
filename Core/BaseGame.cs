@@ -25,6 +25,7 @@ namespace Core
         private Vector2 _worldPosition;
         private BitmapFont _bitmapFont;
         private RendererRegistry _rendererRegistry = new RendererRegistry();
+        private Texture2D parallaxTex;
 
         protected BaseGame()
         {
@@ -53,6 +54,7 @@ namespace Core
             
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _bitmapFont = Content.Load<BitmapFont>("Fonts/montserrat-32");
+            parallaxTex = Content.Load<Texture2D>("Backgrounds/red_crystals_cave");
            
             // Register renderers here
             _rendererRegistry.RegisterRenderer(new PlayerRenderer());
@@ -86,10 +88,13 @@ namespace Core
         {
             GraphicsDevice.Clear(_cameraController.BackColor);
 
-            var transformMatrix = _camera.GetViewMatrix();
-            // TODO add camera transposition
-            _spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix(new Vector2()), samplerState: SamplerState.PointClamp);
+            _spriteBatch.Draw(parallaxTex, new Vector2(), Color.White);
+            _spriteBatch.End();
             
+            
+            var transformMatrix = _camera.GetViewMatrix();
+            _spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
             _activeScene.Draw(_spriteBatch);
             DebugDrawer.DrawAll(_spriteBatch);
             _spriteBatch.End();
