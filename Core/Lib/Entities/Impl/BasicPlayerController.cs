@@ -14,8 +14,9 @@ namespace Core.Lib.Entities.Impl
         private const float SlideSpeed = 25f;
         private const long SlideEffectId = 1;
         
-        private const float SlideJumpXSpeed = 100f;
-        private const float SlideJumpXDecay = 20f;
+        private const float SlideJumpXSpeed = 3.5f;
+        private const float MovementSpeed = 6;
+
         
         private const float JumpSpeed = 200f;
         private const float JumpDecay = 70f;
@@ -41,17 +42,15 @@ namespace Core.Lib.Entities.Impl
         public void Update(float deltaTime)
         {
             #region Movement Input
-
-            const float movementSpeed = 100;
             
             var movementInput = new Vector2();
 
             if (_playerInput.ShouldMoveLeft())
-                movementInput += new Vector2(-movementSpeed, 0);
+                movementInput += new Vector2(-MovementSpeed, 0);
 
 
             if (_playerInput.ShouldMoveRight())
-                movementInput += new Vector2(movementSpeed, 0);
+                movementInput += new Vector2(MovementSpeed, 0);
 
             _locomotionBody.Move(movementInput);
             
@@ -85,8 +84,7 @@ namespace Core.Lib.Entities.Impl
                 {
                     var dir = _slidingRight ? -1 : 1;
                     // Add horizontal direction boost
-                    direction += new Vector2(dir * SlideJumpXSpeed, 0);
-                    modifier += new Vector2(-dir * SlideJumpXDecay, 0);
+                    _locomotionBody.AddImpulse( new Vector2(dir * SlideJumpXSpeed, 0));
                     // TODO: Replace by velocity system
                 }
 

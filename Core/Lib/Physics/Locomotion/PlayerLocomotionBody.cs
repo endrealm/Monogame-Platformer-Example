@@ -10,29 +10,30 @@ namespace Core.Lib.Physics.Locomotion
 {
     public class PlayerLocomotionBody: LocomotionBody, IUpdateable
     {
-        
-        private readonly float gravityMultiplier = 20f;
-        private readonly float gravityThreshold = 200f;
+        private const float GravityMultiplier = 20f;
+        private const float GravityThreshold = 200f;
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;
-        
-        private readonly float hitDensity = 1f;
-        private readonly float hitExt = .5f;
-        
-        private readonly float castDensity = 1f;
-        
+
+        private const float HitDensity = 1f;
+        private const float HitExt = .5f;
+        private const float CastDensity = 1f;
+        private const float AirDampening = 8f;
+        private const float GroundDampening = 15f;
+
         private readonly List<FreezeEffect> _freezeEffects = new List<FreezeEffect>();
         private readonly List<VelocityEffect> _velocityEffects = new List<VelocityEffect>();
         private Vector2 _movement;
+        private Vector2 _movementSpeedCap = new Vector2(2, 2);
+        private Vector2 _baseVelocity;
         private float _gravity;
         
-        private ICollisionTarget[] rightHits = Array.Empty<ICollisionTarget>();
-        private ICollisionTarget[] leftHits = Array.Empty<ICollisionTarget>();
-        private ICollisionTarget[] upHits = Array.Empty<ICollisionTarget>();
-        private ICollisionTarget[] downHits = Array.Empty<ICollisionTarget>();
-        private Vector2 movementRaw;
-        private Vector2 movementSmoothed;
-
+        private ICollisionTarget[] _rightHits = Array.Empty<ICollisionTarget>();
+        private ICollisionTarget[] _leftHits = Array.Empty<ICollisionTarget>();
+        private ICollisionTarget[] _upHits = Array.Empty<ICollisionTarget>();
+        private ICollisionTarget[] _downHits = Array.Empty<ICollisionTarget>();
+        private Vector2 _movementSmoothed;
+ 
         private readonly IPlayer _target;
         private readonly Transform2 _transform;
 
@@ -41,7 +42,7 @@ namespace Core.Lib.Physics.Locomotion
             _target = target;
             _transform = transform;
         }
-
+ 
 
         public override void Move(Vector2 direction)
         {
@@ -68,7 +69,7 @@ namespace Core.Lib.Physics.Locomotion
 
         public override bool IsGrounded()
         {
-            return downHits.Length > 0;
+            return _downHits.Length > 0;
         }
 
         public override bool MovingAgainstAnyWall()
@@ -84,6 +85,11 @@ namespace Core.Lib.Physics.Locomotion
             return _movement.X < 0 && IsWallAtLeft();
         }
 
+        public override void AddImpulse(Vector2 velocity)
+        {
+            _baseVelocity += velocity;
+        }
+
         public override bool TouchingAnyWall()
         {
             return IsWallAtLeft() || IsWallAtRight();
@@ -93,27 +99,21 @@ namespace Core.Lib.Physics.Locomotion
         
         public override bool IsCeilingAtHead()
         {
-            return upHits.Length > 0;
+            return _upHits.Length > 0;
         }
 
         public override bool IsWallAtRight()
         {
-            return rightHits.Length > 0;
+            return _rightHits.Length > 0;
         }
 
         public override bool IsWallAtLeft()
         {
-            return leftHits.Length > 0;
+            return _leftHits.Length > 0;
         }
-
-        public override Vector2 GetLastMovementRaw()
-        {
-            return movementRaw;
-        }
-
         public override Vector2 GetLastMovementSmoothed()
         {
-            return movementSmoothed;
+            return _movementSmoothed;
         }
 
         // Update is called once per frame
@@ -126,22 +126,74 @@ namespace Core.Lib.Physics.Locomotion
 
         private void CalculateGravity(float deltaTime)
         {
-            _gravity += gravityMultiplier * gravityMultiplier * deltaTime;
-            if (_gravity > gravityThreshold)
+            _gravity += GravityMultiplier * GravityMultiplier * deltaTime;
+            if (_gravity > GravityThreshold)
             {
-                _gravity = gravityThreshold;
+                _gravity = GravityThreshold;
             }
         }
 
         private void PositionUpdate(float deltaTime)
         {
-            var direction = _movement;
+
+            var dampening = IsGrounded() ? GroundDampening : AirDampening;
+            
+            #region Apply Player Movement
+
+            if (_movement.X < 0)
+            {
+                if (MathF.Abs(_baseVelocity.X) < _movementSpeedCap.X)
+                {
+                    // clamp value to max by regular move
+                    _baseVelocity.X = MathF.Max(_baseVelocity.X + (_movement.X - dampening) * deltaTime, -_movementSpeedCap.X);
+                }
+            } else if (_movement.X > 0)
+            {
+                if (MathF.Abs(_baseVelocity.X) < _movementSpeedCap.X)
+                {
+                    // clamp value to max by regular move
+                    _baseVelocity.X = MathF.Min(_baseVelocity.X + (_movement.X + dampening) * deltaTime, _movementSpeedCap.X);
+                }
+            }
+            
+            if (_movement.Y < 0)
+            {
+                if (MathF.Abs(_baseVelocity.Y) < _movementSpeedCap.Y)
+                {
+                    // clamp value to max by regular move
+                    _baseVelocity.Y = MathF.Max(_baseVelocity.Y + _movement.Y * deltaTime, -_movementSpeedCap.Y);
+                }
+            } else if (_movement.Y > 0)
+            {
+                if (MathF.Abs(_baseVelocity.Y) < _movementSpeedCap.Y)
+                {
+                    // clamp value to max by regular move
+                    _baseVelocity.Y = MathF.Min(_baseVelocity.Y + _movement.Y * deltaTime, _movementSpeedCap.Y);
+                }
+            }
+
+            #endregion
+
+            #region Dampening
+
+            if (_baseVelocity.X > 0)
+            {
+                _baseVelocity.X = MathF.Max(_baseVelocity.X - dampening * deltaTime, 0);
+            } else if (_baseVelocity.X < 0)
+            {
+                _baseVelocity.X = MathF.Min(_baseVelocity.X + dampening * deltaTime, 0);
+            }
+
+            #endregion
+            
+            // Copy velocity to prevent manipulation by effect
+            var direction = new Vector2(_baseVelocity.X, _baseVelocity.Y);
             
 
             bool gravitySuppressed = false;
             _velocityEffects.ForEach(effect =>
             {
-                direction += effect.Direction * deltaTime * 50;
+                direction += effect.Direction * deltaTime;
                 effect.Update(deltaTime);
 
                 if (effect.SuppressGravity())
@@ -156,8 +208,7 @@ namespace Core.Lib.Physics.Locomotion
                 _gravity = 0;
             }
             
-            direction += new Vector2(0, _gravity);
-            var delta = new Vector2(direction.X, direction.Y) * deltaTime;
+            var delta = direction + new Vector2(0, _gravity) * deltaTime;
             
             #region Validate new location
 
@@ -165,31 +216,36 @@ namespace Core.Lib.Physics.Locomotion
             var rightDistance = RightBlocked(ref delta);
             var downDistance = DownBlocked(ref delta);
             var upDistance = UpBlocked(ref delta);
-            if(delta.X <= -leftDistance)
+            if(delta.X <= -leftDistance && leftDistance > -1)
             {
                 delta.X = -leftDistance;
+                _baseVelocity.X = 0;
+                Console.WriteLine("1");
             }
             
-            if(delta.X >= rightDistance)
+            if(delta.X >= rightDistance && rightDistance > -1)
             {
                 delta.X = rightDistance;
+                _baseVelocity.X = 0;
+                Console.WriteLine("2");
             }
 
-            if (delta.Y >= downDistance)
+            if (delta.Y >= downDistance && downDistance > -1)
             {
                 delta.Y = downDistance;
                 _gravity = 0; // Reset gravity
+                _baseVelocity.Y = 0;
             }
 
-            if (delta.Y<= -upDistance)
+            if (delta.Y<= -upDistance && upDistance > -1)
             {
                 delta.Y = -upDistance;
+                _baseVelocity.Y = 0;
             }
 
             #endregion
 
-            movementRaw = direction;
-            movementSmoothed = delta;
+            _movementSmoothed = delta;
             _transform.Position += delta;
         }
 
@@ -203,7 +259,7 @@ namespace Core.Lib.Physics.Locomotion
 
         float LeftBlocked(ref Vector2 delta)
         {
-            leftHits = Array.Empty<ICollisionTarget>();
+            _leftHits = Array.Empty<ICollisionTarget>();
             
             var xDelta = -0.000001f;
             var iterations = 0;
@@ -211,18 +267,18 @@ namespace Core.Lib.Physics.Locomotion
             {
                 var hits = BlockedX(xDelta, Vectors.Left);
                 if (hits.Length > 0){
-                    leftHits = hits;
-                    return iterations * hitDensity;
+                    _leftHits = hits;
+                    return iterations * HitDensity;
                 }
-                xDelta -= hitDensity;
+                xDelta -= HitDensity;
                 iterations++;
             } while (xDelta > delta.X);
 
-            return iterations * hitDensity;
+            return -2;
         }
         float RightBlocked(ref Vector2 delta)
         {
-            rightHits = Array.Empty<ICollisionTarget>();
+            _rightHits = Array.Empty<ICollisionTarget>();
             
             var xDelta = 0.000001f;
             var iterations = 0;
@@ -231,17 +287,17 @@ namespace Core.Lib.Physics.Locomotion
                 var hits = BlockedX(xDelta, Vectors.Right);
                 if (hits.Length > 0)
                 {
-                    rightHits = hits;
-                    return iterations * hitDensity;
+                    _rightHits = hits;
+                    return iterations * HitDensity;
                 }
-                xDelta += hitDensity;
+                xDelta += HitDensity;
                 iterations++;
             } while (xDelta < delta.X);
-            return iterations * hitDensity;
+            return -2;
         }
         float UpBlocked(ref Vector2 delta)
         {
-            upHits = Array.Empty<ICollisionTarget>();
+            _upHits = Array.Empty<ICollisionTarget>();
             
             var yDelta = -0.000001f;
             var iterations = 0;
@@ -250,17 +306,17 @@ namespace Core.Lib.Physics.Locomotion
                 var hits = BlockedY(yDelta, -Vectors.Up);
                 if (hits.Length > 0)
                 {
-                    upHits = hits;
-                    return iterations * hitDensity;
+                    _upHits = hits;
+                    return iterations * HitDensity;
                 }
-                yDelta -= hitDensity;
+                yDelta -= HitDensity;
                 iterations++;
             } while (yDelta > delta.Y);
-            return iterations * hitDensity;
+            return -2;
         }
         float DownBlocked(ref Vector2 delta)
         {
-            downHits = Array.Empty<ICollisionTarget>();
+            _downHits = Array.Empty<ICollisionTarget>();
             
             var yDelta = 0.000001f;
             var iterations = 0;
@@ -269,14 +325,14 @@ namespace Core.Lib.Physics.Locomotion
                 var hits = BlockedY(yDelta, -Vectors.Down);
                 if (hits.Length > 0)
                 {
-                    downHits = hits;
-                    return iterations * hitDensity;
+                    _downHits = hits;
+                    return iterations * HitDensity;
                 }
-                yDelta += hitDensity;
+                yDelta += HitDensity;
                 iterations++;
             } while (yDelta < delta.Y);
 
-            return iterations * hitDensity;
+            return -2;
         }
         
         ICollisionTarget[] BlockedX(float delta, Vector2 direction)
@@ -288,9 +344,9 @@ namespace Core.Lib.Physics.Locomotion
             var halfHeight = Hitbox.Height / 2;
             var list = new List<ICollisionTarget>();
 
-            for (var i = -halfHeight+0.05f; i <= halfHeight-0.05f; i += castDensity)
+            for (var i = -halfHeight+0.05f; i <= halfHeight-0.05f; i += CastDensity)
             {
-                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, hitDensity + hitExt, target => !target.TriggerOnly && target != _target);
+                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, HitDensity + HitExt, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(delta,i), direction, hitDensity, worldMask);
                 // Debug.DrawRay(start + new Vector2(delta,i), direction, Color.green, Time.deltaTime);
                 if (hit != null)
@@ -309,11 +365,11 @@ namespace Core.Lib.Physics.Locomotion
             
             var halfWidth = Hitbox.Width / 2;
             var list = new List<ICollisionTarget>();
-            for (var i = -halfWidth+2f; i <= halfWidth-2f; i += castDensity)
+            for (var i = -halfWidth+2f; i <= halfWidth-2f; i += CastDensity)
             {
-                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, hitDensity, target => !target.TriggerOnly && target != _target);
+                var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, HitDensity, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(i,delta), direction, hitDensity, worldMask);
-                DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, hitDensity + hitExt), Color.Pink);
+                DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, HitDensity + HitExt), Color.Pink);
                 if (hit != null)
                 {
                     list.Add(hit.collider);

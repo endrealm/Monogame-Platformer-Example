@@ -18,14 +18,11 @@ namespace Core.Lib.Physics.Locomotion
         public abstract bool MovingAgainstRightWall();
         public abstract bool MovingAgainstLeftWall();
 
+        public abstract void AddImpulse(Vector2 velocity);
+
         
         public abstract void Update(float deltaTime);
         
-        /**
-         * Raw movement input. This value is neither multiplied by time nor validated against e.g. obstacles.
-         * This does contain the sum of velocity modifications.
-         */
-        public abstract Vector2 GetLastMovementRaw();
         /**
          * Smoothed (by Time.deltaTime) and validated movement input. 
          */
