@@ -98,8 +98,9 @@ namespace Core.Lib
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var render in _level.Layers)
+            for (var index = _level.Layers.Length - 1; index >= 0; index--)
             {
+                var render = _level.Layers[index];
                 spriteBatch.Draw(render, _level.Position, Color.White);
             }
 
