@@ -10,7 +10,7 @@ namespace Core.Lib.Physics.Locomotion
 {
     public class PlayerLocomotionBody: LocomotionBody, IUpdateable
     {
-        private const float GravityMultiplier = 20f;
+        private const float GravityMultiplier = 35f;
         private const float GravityThreshold = 200f;
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;
@@ -220,14 +220,12 @@ namespace Core.Lib.Physics.Locomotion
             {
                 delta.X = -leftDistance;
                 _baseVelocity.X = 0;
-                Console.WriteLine("1");
             }
             
             if(delta.X >= rightDistance && rightDistance > -1)
             {
                 delta.X = rightDistance;
                 _baseVelocity.X = 0;
-                Console.WriteLine("2");
             }
 
             if (delta.Y >= downDistance && downDistance > -1)
