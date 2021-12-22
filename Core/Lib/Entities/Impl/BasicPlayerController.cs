@@ -85,7 +85,6 @@ namespace Core.Lib.Entities.Impl
                     var dir = _slidingRight ? -1 : 1;
                     // Add horizontal direction boost
                     _locomotionBody.AddImpulse( new Vector2(dir * SlideJumpXSpeed, 0));
-                    // TODO: Replace by velocity system
                 }
 
                 _verticalMovementEffect.Cancel();
@@ -99,17 +98,17 @@ namespace Core.Lib.Entities.Impl
 
             if (_verticalMovementEffect.IsCancelled())
             {
-                if (!_locomotionBody.MovingAgainstAnyWall()) return;
-                
-                _verticalMovementEffect = new VelocityEffect(new Vector2(0, SlideSpeed), true)
+                if (_playerInput.ShouldGrab() && _locomotionBody.TouchingAnyWall())
                 {
-                    TypeId = SlideEffectId
-                };
-                
-                _locomotionBody.AddVelocityEffect(_verticalMovementEffect);
+                    _verticalMovementEffect = new VelocityEffect(new Vector2(0, SlideSpeed), true)
+                    {
+                        TypeId = SlideEffectId
+                    };
 
-                _slidingRight = _locomotionBody.MovingAgainstRightWall();
+                    _locomotionBody.AddVelocityEffect(_verticalMovementEffect);
 
+                    _slidingRight = _locomotionBody.IsWallAtRight();
+                }
             }
             
             if (IsSliding() && (!_locomotionBody.TouchingAnyWall() || _locomotionBody.IsGrounded()))

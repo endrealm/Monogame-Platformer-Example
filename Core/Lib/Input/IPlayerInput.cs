@@ -5,5 +5,6 @@
         bool ShouldJump();
         bool ShouldMoveLeft();
         bool ShouldMoveRight();
+        bool ShouldGrab();
     }
 }

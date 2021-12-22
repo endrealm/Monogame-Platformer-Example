@@ -7,6 +7,7 @@ namespace Core.Lib.Input.Impl
     {
         private bool _shouldMoveLeft;
         private bool _shouldMoveRight;
+        private bool _shouldGrab;
         private bool _shouldJump;
 
         private readonly KeyWatcher[] jumpKeys =
@@ -28,6 +29,7 @@ namespace Core.Lib.Input.Impl
             
             _shouldMoveLeft = keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left);
             _shouldMoveRight = keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right);
+            _shouldGrab = keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
             _shouldJump = jumpKeys.Any(watcher => watcher.KeyPressedThisFrame);
         }
 
@@ -44,6 +46,11 @@ namespace Core.Lib.Input.Impl
         public bool ShouldMoveRight()
         {
             return _shouldMoveRight;
+        }
+
+        public bool ShouldGrab()
+        {
+            return _shouldGrab;
         }
     }
 }
