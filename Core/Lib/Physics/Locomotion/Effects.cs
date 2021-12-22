@@ -4,6 +4,7 @@ namespace Core.Lib.Physics.Locomotion
 {
     public abstract class Effect
     {
+        public long TypeId { get; set; } = -1;
         private bool _cancelled;
 
         public void Cancel()

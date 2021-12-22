@@ -11,9 +11,14 @@ namespace Core.Lib.Physics.Locomotion
 
         public abstract bool IsGrounded();
         public abstract bool IsCeilingAtHead();
+        public abstract bool MovingAgainstAnyWall();
+        public abstract bool TouchingAnyWall();
         public abstract bool IsWallAtRight();
         public abstract bool IsWallAtLeft();
+        public abstract bool MovingAgainstRightWall();
+        public abstract bool MovingAgainstLeftWall();
 
+        
         public abstract void Update(float deltaTime);
         
         /**

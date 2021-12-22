@@ -10,8 +10,7 @@ namespace Core.Lib.Physics.Locomotion
 {
     public class PlayerLocomotionBody: LocomotionBody, IUpdateable
     {
-
-
+        
         private readonly float gravityMultiplier = 20f;
         private readonly float gravityThreshold = 200f;
 
@@ -71,6 +70,27 @@ namespace Core.Lib.Physics.Locomotion
         {
             return downHits.Length > 0;
         }
+
+        public override bool MovingAgainstAnyWall()
+        {
+            return MovingAgainstLeftWall() || MovingAgainstRightWall();
+        }
+        public override bool MovingAgainstRightWall()
+        {
+            return IsWallAtRight() && _movement.X > 0;
+        }
+        public override bool MovingAgainstLeftWall()
+        {
+            return _movement.X < 0 && IsWallAtLeft();
+        }
+
+        public override bool TouchingAnyWall()
+        {
+            return IsWallAtLeft() || IsWallAtRight();
+
+        }
+
+        
         public override bool IsCeilingAtHead()
         {
             return upHits.Length > 0;
@@ -121,7 +141,7 @@ namespace Core.Lib.Physics.Locomotion
             bool gravitySuppressed = false;
             _velocityEffects.ForEach(effect =>
             {
-                direction += effect.Direction;
+                direction += effect.Direction * deltaTime * 50;
                 effect.Update(deltaTime);
 
                 if (effect.SuppressGravity())
