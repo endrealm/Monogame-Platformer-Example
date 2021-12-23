@@ -19,7 +19,12 @@ namespace Core.Lib.Entities.Impl
 
         
         private const float JumpSpeed = 220f;
+        private const float CoyoteJumpGraceTime = 50/1000f;
+        private const float CoyoteWallJumpGraceTime = 50/1000f;
         private const float JumpDecay = 115f;
+        
+        
+        private float _timeSinceLastGround = 0f;
         
         
         /// <summary>
@@ -30,6 +35,11 @@ namespace Core.Lib.Entities.Impl
         
         private int _currentJumps;
         private bool _jumpedFromGround;
+        
+        /// <summary>
+        /// True if last action was to be grounded or sliding (for coyote jump)
+        /// </summary>
+        private bool _lastSlideOrGround;
 
         public BasicPlayerController(LocomotionBody locomotionBody, IPlayerInput playerInput)
         {
@@ -41,6 +51,21 @@ namespace Core.Lib.Entities.Impl
 
         public void Update(float deltaTime)
         {
+
+            #region Coyote Jump Calculation
+
+            if (IsSliding() || _locomotionBody.IsGrounded())
+            {
+                _lastSlideOrGround = _locomotionBody.IsGrounded();
+                _timeSinceLastGround = 0;
+            }
+            else
+            {
+                _timeSinceLastGround += deltaTime;
+            }
+
+            #endregion
+
             #region Movement Input
             
             var movementInput = new Vector2();
@@ -71,7 +96,7 @@ namespace Core.Lib.Entities.Impl
             if (_playerInput.ShouldJump())
             {
 
-                if(!_locomotionBody.IsGrounded() && !IsSliding())
+                if(!_locomotionBody.IsGrounded() && !IsSliding() && !CoyoteGraceTimeActive())
                 {
                     if(_currentJumps <= 0) return; // No air jump available
                     _currentJumps--;
@@ -110,13 +135,18 @@ namespace Core.Lib.Entities.Impl
                     _slidingRight = _locomotionBody.IsWallAtRight();
                 }
             }
-            
+
             if (IsSliding() && (!_locomotionBody.TouchingAnyWall() || _locomotionBody.IsGrounded()))
             {
                 _verticalMovementEffect.Cancel();
             }
 
             #endregion
+        }
+
+        private bool CoyoteGraceTimeActive()
+        {
+            return _timeSinceLastGround <= (_lastSlideOrGround ? CoyoteJumpGraceTime : CoyoteWallJumpGraceTime);
         }
 
         private bool IsSliding()
