@@ -6,5 +6,7 @@
         bool ShouldMoveLeft();
         bool ShouldMoveRight();
         bool ShouldGrab();
+        bool ShouldClimbUp();
+        bool ShouldClimbDown();
     }
 }

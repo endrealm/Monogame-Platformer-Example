@@ -73,6 +73,7 @@ namespace Core.Lib.Entities.Impl
         public override bool Die()
         {
             FullHeal();
+            _locomotionBody.ResetVelocity();
             Transform.Position = _lastCheckpoint;
             CheckAndChangeRoom();
             return false;

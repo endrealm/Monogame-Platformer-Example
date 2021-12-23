@@ -17,6 +17,7 @@ namespace Core.Lib.Physics.Locomotion
         public abstract bool IsWallAtLeft();
         public abstract bool MovingAgainstRightWall();
         public abstract bool MovingAgainstLeftWall();
+        public abstract void ResetVelocity();
 
         public abstract void AddImpulse(Vector2 velocity);
 

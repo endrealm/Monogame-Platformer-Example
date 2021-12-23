@@ -7,13 +7,13 @@ namespace Core.Lib.Input.Impl
     {
         private bool _shouldMoveLeft;
         private bool _shouldMoveRight;
+        private bool _shouldClimbUp;
+        private bool _shouldClimbDown;
         private bool _shouldGrab;
         private bool _shouldJump;
 
-        private readonly KeyWatcher[] jumpKeys =
+        private readonly KeyWatcher[] _jumpKeys =
         {
-            new KeyWatcher(Keys.W),
-            new KeyWatcher(Keys.Up),
             new KeyWatcher(Keys.Space),
         };
         
@@ -22,15 +22,17 @@ namespace Core.Lib.Input.Impl
             var keyboardState = Keyboard.GetState();
             
             // Update keys
-            foreach (var watcher in jumpKeys)
+            foreach (var watcher in _jumpKeys)
             {
                 watcher.Update(deltaTime, keyboardState);
             }
             
+            _shouldClimbUp = keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up);
+            _shouldClimbDown = keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down);
             _shouldMoveLeft = keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left);
             _shouldMoveRight = keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right);
             _shouldGrab = keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
-            _shouldJump = jumpKeys.Any(watcher => watcher.KeyPressedThisFrame);
+            _shouldJump = _jumpKeys.Any(watcher => watcher.KeyPressedThisFrame);
         }
 
         public bool ShouldJump()
@@ -51,6 +53,16 @@ namespace Core.Lib.Input.Impl
         public bool ShouldGrab()
         {
             return _shouldGrab;
+        }
+
+        public bool ShouldClimbUp()
+        {
+            return _shouldClimbUp;
+        }
+
+        public bool ShouldClimbDown()
+        {
+            return _shouldClimbDown;
         }
     }
 }

@@ -85,6 +85,11 @@ namespace Core.Lib.Physics.Locomotion
             return _movement.X < 0 && IsWallAtLeft();
         }
 
+        public override void ResetVelocity()
+        {
+            _baseVelocity = new Vector2();
+        }
+
         public override void AddImpulse(Vector2 velocity)
         {
             _baseVelocity += velocity;
@@ -337,16 +342,17 @@ namespace Core.Lib.Physics.Locomotion
         {
             var modifier = delta > 0 ? 1 : -1;
             var start = Hitbox.Center;
-            start.X += modifier * (Hitbox.Width / 2);
+            start.X += modifier * ((Hitbox.Width / 2)-2);
 
             var halfHeight = Hitbox.Height / 2;
             var list = new List<ICollisionTarget>();
 
-            for (var i = -halfHeight+0.05f; i <= halfHeight-0.05f; i += CastDensity)
+            for (var i = -halfHeight+2f; i <= halfHeight-2f; i += CastDensity)
             {
                 var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, HitDensity + HitExt, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(delta,i), direction, hitDensity, worldMask);
                 // Debug.DrawRay(start + new Vector2(delta,i), direction, Color.green, Time.deltaTime);
+                DebugDrawer.DrawLine(new LineF(start + new Vector2(delta,i), direction, HitDensity + HitExt), Color.MistyRose);
                 if (hit != null)
                 {
                     list.Add(hit.collider);
@@ -359,7 +365,7 @@ namespace Core.Lib.Physics.Locomotion
         {
             var modifier = delta > 0 ? 1 : -1;
             var start = Hitbox.Center;
-            start.Y += modifier * (Hitbox.Height / 2);
+            start.Y += modifier * ((Hitbox.Height / 2)-1f);
             
             var halfWidth = Hitbox.Width / 2;
             var list = new List<ICollisionTarget>();
