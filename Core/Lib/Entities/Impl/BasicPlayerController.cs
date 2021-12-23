@@ -18,8 +18,8 @@ namespace Core.Lib.Entities.Impl
         private const float MovementSpeed = 6;
 
         
-        private const float JumpSpeed = 300f;
-        private const float JumpDecay = 120f;
+        private const float JumpSpeed = 220f;
+        private const float JumpDecay = 115f;
         
         
         /// <summary>

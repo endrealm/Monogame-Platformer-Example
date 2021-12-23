@@ -10,7 +10,7 @@ namespace Core.Lib.Physics.Locomotion
 {
     public class PlayerLocomotionBody: LocomotionBody, IUpdateable
     {
-        private const float GravityMultiplier = 35f;
+        private const float GravityMultiplier = 30f;
         private const float GravityThreshold = 200f;
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;

@@ -15,8 +15,8 @@ namespace Core.Lib.Entities.Impl
     {
         private readonly WorldScene _worldScene;
         private GameLevel? _currentLevel;
-        private readonly Vector2 _size = new Vector2(16, 24);
-        private readonly Vector2 _halfSize = new Vector2(16, 24)/2;
+        private readonly Vector2 _size = new Vector2(12, 18);
+        private readonly Vector2 _halfSize = new Vector2(12, 18)/2;
         public Vector2 HalfSize => _halfSize;
         public void SetSpawn(Vector2 spawnPoint)
         {
