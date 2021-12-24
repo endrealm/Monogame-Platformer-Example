@@ -14,7 +14,7 @@ namespace Core.Lib.Entities.Impl
         
         private const float ClimbUpSpeed = 25f;
         private const float ClimbDownSpeed = 25f;
-        private const float MaxClimbTime = 2f;
+        private const float MaxClimbTime = 3.5f;
         
         private const float SlideJumpXSpeed = 3.5f;
         private const float MovementSpeed = 6;

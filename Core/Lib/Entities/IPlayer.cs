@@ -1,4 +1,5 @@
 ﻿using Core.Lib.Physics;
+using Core.Lib.Physics.Locomotion;
 using Microsoft.Xna.Framework;
 
 namespace Core.Lib.Entities
@@ -16,5 +17,6 @@ namespace Core.Lib.Entities
         
         Vector2 HalfSize { get; }
         void SetSpawn(Vector2 spawnPoint);
+        LocomotionBody GetLocomotionBody();
     }
 }

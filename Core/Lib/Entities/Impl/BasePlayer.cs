@@ -17,6 +17,9 @@ namespace Core.Lib.Entities.Impl
         private GameLevel? _currentLevel;
         private readonly Vector2 _size = new Vector2(12, 18);
         private readonly Vector2 _halfSize = new Vector2(12, 18)/2;
+        
+        private readonly Vector2 _triggerSize = new Vector2(10, 16);
+        private readonly Vector2 _halfTriggerSize = new Vector2(10, 16)/2;
         public Vector2 HalfSize => _halfSize;
         public void SetSpawn(Vector2 spawnPoint)
         {
@@ -93,8 +96,9 @@ namespace Core.Lib.Entities.Impl
         }
 
         public IShapeF Bounds => new RectangleF(Transform.WorldPosition - _halfSize, _size);
+        public IShapeF TriggerBounds => new RectangleF(Transform.WorldPosition - _halfTriggerSize, _triggerSize);
         public bool StaticCollider => false;
-        public bool TriggerOnly => false;
+        public bool TriggerOnly => true;
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
@@ -105,6 +109,11 @@ namespace Core.Lib.Entities.Impl
             }
             
             // Transform.Position -= collisionInfo.PenetrationVector;
+        }
+        
+        public LocomotionBody GetLocomotionBody()
+        {
+            return _locomotionBody;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Core.Lib.Physics
                 
                 // if(target.StaticCollider) continue;
                 data.RemoveFromAllParents();
-                foreach (QuadtreeData quadtreeData in _collisionTree.Query(target.Bounds))
+                foreach (QuadtreeData quadtreeData in _collisionTree.Query(target.TriggerOnly ? target.TriggerBounds : target.Bounds))
                 {
                     CollisionEventArgs collisionInfo = new CollisionEventArgs
                     {
@@ -34,7 +34,7 @@ namespace Core.Lib.Physics
                         PenetrationVector = CalculatePenetrationVector(data.Bounds, quadtreeData.Bounds)
                     };
                     target.OnCollision(collisionInfo);
-                    data.Bounds = data.Target.Bounds;
+                    data.Bounds = data.Target.TriggerOnly ? data.Target.TriggerBounds : data.Target.Bounds;
                 }
 
                 _collisionTree.Insert(data);
@@ -147,7 +147,7 @@ namespace Core.Lib.Physics
             if(!DebugDrawer.DEBUG) return;
             foreach (QuadtreeData data in _targetDataDictionary.Values)
             {
-                var shape = data.Bounds;
+                var shape = data.Target.TriggerOnly ? data.Target.TriggerBounds : data.Target.Bounds;
                 if (shape is RectangleF rect)
                 {
                     spriteBatch.DrawRectangle(rect, Color.Lime, 1);
