@@ -1,32 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
-        <Configurations>Debug;Release;</Configurations>
-        <Platforms>AnyCPU</Platforms>
-    </PropertyGroup>
-    <PropertyGroup>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <ApplicationIcon>Icon.ico</ApplicationIcon>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove="Icon.ico" />
-        <None Remove="Icon.bmp" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Icon.ico" />
-        <EmbeddedResource Include="Icon.bmp" />
+        <MonoGameContentReference Include="Content\Content.mgcb" />
     </ItemGroup>
     <ItemGroup>
         <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="MonoGame.Aseprite" Version="2.0.4.1" />
+        <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\LDtk\LDtk.csproj" />
     </ItemGroup>
 </Project>

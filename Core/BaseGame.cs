@@ -40,31 +40,32 @@ namespace Core
         protected override void LoadContent()
         {
             GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-            
+
             _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             _graphics.IsFullScreen = true;
             _graphics.HardwareModeSwitch = false;
             _graphics.ApplyChanges();
-            
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, (int)_baseScreenSize.X, (int)_baseScreenSize.Y);
+
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, (int) _baseScreenSize.X,
+                (int) _baseScreenSize.Y);
             _camera = new OrthographicCamera(viewportAdapter);
 
             _cameraController = new CameraController(_camera, 1);
-            
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _bitmapFont = Content.Load<BitmapFont>("Fonts/montserrat-32");
             parallaxTex = Content.Load<Texture2D>("Backgrounds/red_crystals_cave");
-           
+
             // Register renderers here
             _rendererRegistry.RegisterRenderer(new PlayerRenderer());
-            
-            
+
+
             foreach (var renderer in _rendererRegistry.AllRenderers)
             {
                 renderer.LoadContent(Content);
             }
-            
+
             LoadActiveScene();
         }
 
@@ -78,28 +79,30 @@ namespace Core
         {
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             var mouseState = Mouse.GetState();
-            
+
             _activeScene.Update(deltaTime);
             _cameraController.Update(deltaTime);
             _worldPosition = _camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
             base.Update(gameTime);
         }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(_cameraController.BackColor);
 
-            _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix(new Vector2()), samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix(new Vector2()),
+                samplerState: SamplerState.PointClamp);
             _spriteBatch.Draw(parallaxTex, new Vector2(), Color.White);
             _spriteBatch.End();
-            
-            
+
+
             var transformMatrix = _camera.GetViewMatrix();
             _spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
             _activeScene.Draw(_spriteBatch);
             DebugDrawer.DrawAll(_spriteBatch);
             _spriteBatch.End();
 
-            
+
             // DebugCamera();
 
             base.Draw(gameTime);
@@ -114,7 +117,8 @@ namespace Core
             stringBuilder.AppendLine($"EQ: Rotate [{MathHelper.ToDegrees(_camera.Rotation):0.00}]");
             stringBuilder.AppendLine($"RF: Zoom [{_camera.Zoom:0.00}]");
             stringBuilder.AppendLine($"World Pos: [{_worldPosition.X:0}, {_worldPosition.Y:0}]");
-            stringBuilder.AppendLine($"Bounds: [{rectangle.X:0}, {rectangle.Y:0}, {rectangle.Width:0}, {rectangle.Height:0}]");
+            stringBuilder.AppendLine(
+                $"Bounds: [{rectangle.X:0}, {rectangle.Y:0}, {rectangle.Width:0}, {rectangle.Height:0}]");
 
             _spriteBatch.Begin(blendState: BlendState.AlphaBlend);
             _spriteBatch.DrawString(_bitmapFont, stringBuilder.ToString(), new Vector2(5, 5), Color.DarkBlue);

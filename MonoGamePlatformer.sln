@@ -1,25 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core", "Core\Core.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossPlatformDesktop", "CrossPlatformDesktop\CrossPlatformDesktop.csproj", "{6BCA4004-94A9-40FE-8BFB-7CDDCA262FB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomContentBuilder", "CustomContentBuilder\CustomContentBuilder.csproj", "{DA4AC5AE-8197-4EA4-A484-C0A70BA36B13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDtk", "LDtk\LDtk.csproj", "{9BE0A130-3F28-4347-9687-6A18AA38113D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{1FB63AF6-989E-4B97-9592-A687BB1EA246}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		|Any CPU = |Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}.|Any CPU.ActiveCfg = |Any CPU
-		{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}.|Any CPU.Build.0 = |Any CPU
 		{6BCA4004-94A9-40FE-8BFB-7CDDCA262FB4}.|Any CPU.ActiveCfg = |Any CPU
 		{6BCA4004-94A9-40FE-8BFB-7CDDCA262FB4}.|Any CPU.Build.0 = |Any CPU
 		{DA4AC5AE-8197-4EA4-A484-C0A70BA36B13}.|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA4AC5AE-8197-4EA4-A484-C0A70BA36B13}.|Any CPU.Build.0 = Debug|Any CPU
 		{9BE0A130-3F28-4347-9687-6A18AA38113D}.|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BE0A130-3F28-4347-9687-6A18AA38113D}.|Any CPU.Build.0 = Debug|Any CPU
+		{1FB63AF6-989E-4B97-9592-A687BB1EA246}.|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FB63AF6-989E-4B97-9592-A687BB1EA246}.|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
