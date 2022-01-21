@@ -18,8 +18,8 @@ namespace Core.Lib.Entities.Impl
         private readonly Vector2 _size = new(12, 18);
         private readonly Vector2 _halfSize = new Vector2(12, 18)/2;
         
-        private readonly Vector2 _triggerSize = new(10, 16);
-        private readonly Vector2 _halfTriggerSize = new Vector2(10, 16)/2;
+        private readonly Vector2 _triggerSize = new(12, 18);
+        private readonly Vector2 _halfTriggerSize = new Vector2(12, 18)/2;
         public Vector2 HalfSize => _halfSize;
         public void SetSpawn(Vector2 spawnPoint)
         {

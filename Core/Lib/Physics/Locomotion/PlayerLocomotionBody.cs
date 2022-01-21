@@ -15,7 +15,7 @@ namespace Core.Lib.Physics.Locomotion
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;
 
-        private const float HitDensity = 1f;
+        private const float HitDensity = .5f;
         private const float HitExt = .5f;
         private const float CastDensity = 1f;
         private const float AirDampening = 8f;
@@ -347,7 +347,7 @@ namespace Core.Lib.Physics.Locomotion
             var halfHeight = Hitbox.Height / 2;
             var list = new List<ICollisionTarget>();
 
-            for (var i = -halfHeight+2f; i <= halfHeight-2f; i += CastDensity)
+            for (var i = -halfHeight+1.5f; i <= halfHeight-1.5f; i += CastDensity)
             {
                 var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(delta,i), direction, HitDensity + HitExt, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(delta,i), direction, hitDensity, worldMask);
@@ -369,7 +369,7 @@ namespace Core.Lib.Physics.Locomotion
             
             var halfWidth = Hitbox.Width / 2;
             var list = new List<ICollisionTarget>();
-            for (var i = -halfWidth+2f; i <= halfWidth-2f; i += CastDensity)
+            for (var i = -halfWidth+1.5f; i <= halfWidth-1.5f; i += CastDensity)
             {
                 var hit = _target.GetRaycastContext()?.Raycast(start + new Vector2(i,delta), direction, HitDensity, target => !target.TriggerOnly && target != _target);
                 // var hit = Physics2D.Raycast(start + new Vector2(i,delta), direction, hitDensity, worldMask);
