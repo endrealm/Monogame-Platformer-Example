@@ -15,7 +15,7 @@ namespace Core.Lib.Physics.Locomotion
 
         private RectangleF Hitbox => (RectangleF) _target.Bounds;
 
-        private const float HitDensity = .5f;
+        private const float HitDensity = .1f;
         private const float HitExt = .5f;
         private const float CastDensity = 1f;
         private const float AirDampening = 8f;
