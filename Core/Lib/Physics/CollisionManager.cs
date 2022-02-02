@@ -144,7 +144,7 @@ namespace Core.Lib.Physics
 
         public void DebugDraw(SpriteBatch spriteBatch)
         {
-            if(!DebugDrawer.DEBUG) return;
+            if(!DebugDrawer.Debug) return;
             foreach (QuadtreeData data in _targetDataDictionary.Values)
             {
                 var shape = data.Target.TriggerOnly ? data.Target.TriggerBounds : data.Target.Bounds;
