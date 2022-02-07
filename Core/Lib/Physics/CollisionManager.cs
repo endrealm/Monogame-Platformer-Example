@@ -8,7 +8,7 @@ using MonoGame.Extended;
 
 namespace Core.Lib.Physics
 {
-    public class CollisionManager: IUpdateable, RaycastContext
+    public class  CollisionManager: IUpdateable, RaycastContext
     {
         private readonly Dictionary<ICollisionTarget, QuadtreeData> _targetDataDictionary =
             new Dictionary<ICollisionTarget, QuadtreeData>();
@@ -146,7 +146,7 @@ namespace Core.Lib.Physics
         {
             if(!DebugDrawer.Debug) return;
             foreach (QuadtreeData data in _targetDataDictionary.Values)
-            {
+            {  
                 var shape = data.Target.TriggerOnly ? data.Target.TriggerBounds : data.Target.Bounds;
                 if (shape is RectangleF rect)
                 {
@@ -155,7 +155,7 @@ namespace Core.Lib.Physics
             }
         }
 
-        public RaycastHit Raycast(Vector2 origin, Vector2 direction, float distance, Func<ICollisionTarget, bool> shouldHit)
+        public RaycastHit? Raycast(Vector2 origin, Vector2 direction, float distance, Func<ICollisionTarget, bool> shouldHit)
         {
             return _collisionTree.Raycast(new LineF(origin, direction, distance), shouldHit);
         }

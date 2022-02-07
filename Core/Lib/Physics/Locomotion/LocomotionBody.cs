@@ -21,6 +21,9 @@ namespace Core.Lib.Physics.Locomotion
 
         public abstract void AddImpulse(Vector2 velocity);
 
+        public abstract void SetAnchorEnabled(bool enabled);
+        public abstract void SetAnchor(Vector2 anchorPoint);
+
         
         public abstract void Update(float deltaTime);
         

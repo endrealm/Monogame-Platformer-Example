@@ -5,11 +5,12 @@ namespace Core.Lib.Physics
 {
     public interface RaycastContext
     {
-        RaycastHit Raycast(Vector2 origin, Vector2 direction, float distance, Func<ICollisionTarget, bool> shouldHit);
+        RaycastHit? Raycast(Vector2 origin, Vector2 direction, float distance, Func<ICollisionTarget, bool> shouldHit);
     }
 
-    public class RaycastHit
+    public struct RaycastHit
     {
-        public ICollisionTarget collider { get; set; }
+        public Vector2 IntersectionPoint { get; set; }
+        public ICollisionTarget Collider { get; set; }
     }
 }

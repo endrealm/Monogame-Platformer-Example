@@ -27,6 +27,8 @@ namespace Core.Lib.Physics.Locomotion
         private Vector2 _movementSpeedCap = new Vector2(2, 2);
         private Vector2 _baseVelocity;
         private float _gravity;
+        private bool _anchorPointEnabled;
+        private Vector2 _anchorPoint;
         
         private ICollisionTarget[] _rightHits = Array.Empty<ICollisionTarget>();
         private ICollisionTarget[] _leftHits = Array.Empty<ICollisionTarget>();
@@ -95,12 +97,41 @@ namespace Core.Lib.Physics.Locomotion
             _baseVelocity += velocity;
         }
 
+#region Anchoring
+
+        public override void SetAnchorEnabled(bool enabled)
+        {
+            _anchorPointEnabled = enabled;
+        }
+
+        public override void SetAnchor(Vector2 anchorPoint)
+        {
+            _anchorPoint = anchorPoint;
+        }
+
+        private void TurnAroundAnchor(ref Vector2 input, Vector2 center)
+        {
+            var outDir = (center - _anchorPoint).NormalizedCopy();
+
+            var angle = System.Math.Abs(outDir.ToAngle() - input.ToAngle());
+
+            var outLength = System.Math.Cos(angle) * input.Length();
+
+            var correctionDir = outDir * (float) outLength;
+
+            if ((input.X * correctionDir.X + input.Y * correctionDir.Y) != 0) return;
+            
+            input = correctionDir;
+        }
+
+#endregion
+        
+
         public override bool TouchingAnyWall()
         {
             return IsWallAtLeft() || IsWallAtRight();
 
         }
-
         
         public override bool IsCeilingAtHead()
         {
@@ -217,10 +248,10 @@ namespace Core.Lib.Physics.Locomotion
             
             #region Validate new location
 
-            var leftDistance = LeftBlocked(ref delta);
-            var rightDistance = RightBlocked(ref delta);
-            var downDistance = DownBlocked(ref delta);
-            var upDistance = UpBlocked(ref delta);
+            var leftDistance = LeftBlocked(delta);
+            var rightDistance = RightBlocked(delta);
+            var downDistance = DownBlocked(delta);
+            var upDistance = UpBlocked(delta);
             if(delta.X <= -leftDistance && leftDistance > -1)
             {
                 delta.X = -leftDistance;
@@ -260,7 +291,7 @@ namespace Core.Lib.Physics.Locomotion
 
         #region HitBox Calls
 
-        float LeftBlocked(ref Vector2 delta)
+        float LeftBlocked(Vector2 delta)
         {
             _leftHits = Array.Empty<ICollisionTarget>();
             
@@ -279,7 +310,7 @@ namespace Core.Lib.Physics.Locomotion
 
             return -2;
         }
-        float RightBlocked(ref Vector2 delta)
+        float RightBlocked(Vector2 delta)
         {
             _rightHits = Array.Empty<ICollisionTarget>();
             
@@ -298,7 +329,7 @@ namespace Core.Lib.Physics.Locomotion
             } while (xDelta < delta.X);
             return -2;
         }
-        float UpBlocked(ref Vector2 delta)
+        float UpBlocked(Vector2 delta)
         {
             _upHits = Array.Empty<ICollisionTarget>();
             
@@ -317,7 +348,7 @@ namespace Core.Lib.Physics.Locomotion
             } while (yDelta > delta.Y);
             return -2;
         }
-        float DownBlocked(ref Vector2 delta)
+        float DownBlocked(Vector2 delta)
         {
             _downHits = Array.Empty<ICollisionTarget>();
             
@@ -355,7 +386,7 @@ namespace Core.Lib.Physics.Locomotion
                 DebugDrawer.DrawLine(new LineF(start + new Vector2(delta,i), direction, HitDensity + HitExt), Color.MistyRose);
                 if (hit != null)
                 {
-                    list.Add(hit.collider);
+                    list.Add(hit.Value.Collider);
                 }
             }
             
@@ -376,7 +407,7 @@ namespace Core.Lib.Physics.Locomotion
                 DebugDrawer.DrawLine(new LineF(start + new Vector2(i,delta), direction, HitDensity + HitExt), Color.Pink);
                 if (hit != null)
                 {
-                    list.Add(hit.collider);
+                    list.Add(hit.Value.Collider);
                 }
             }
 

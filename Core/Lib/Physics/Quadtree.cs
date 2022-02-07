@@ -202,7 +202,7 @@ namespace Core.Lib.Physics
             }
         }
 
-        public RaycastHit Raycast(LineF line,
+        public RaycastHit? Raycast(LineF line,
             Func<ICollisionTarget, bool> shouldHit)
         {
             if (!line.IntersectsWith(NodeBounds))
@@ -212,16 +212,17 @@ namespace Core.Lib.Physics
             {
                 foreach (QuadtreeData content in this.Contents)
                 {
-                    if (!content.Dirty && line.IntersectsWith(content.Bounds))
+                    if(content.Dirty) continue;
+                    
+                    var hit = line.IntersectsWith(content.Bounds, out var intersectionPoint);
+                    if (!hit) continue;
+                    if (!shouldHit.Invoke(content.Target)) continue;
+                    
+                    return new RaycastHit
                     {
-                        if(shouldHit.Invoke(content.Target))
-                        {
-                            return new RaycastHit
-                            {
-                                collider = content.Target
-                            };
-                        }
-                    }
+                        IntersectionPoint = intersectionPoint,
+                        Collider = content.Target
+                    };
                 }
             }
             else
